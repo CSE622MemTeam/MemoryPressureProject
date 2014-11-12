@@ -34,7 +34,7 @@ public class SwapReference<T> {
   public synchronized void set(T object) {
     if (isSwappedOut())
       Swapper.free(token());
-    return object;
+    this.object = object;
   }
 
   /** Bring the referent in from swap. No effect if already swapped in. */
@@ -50,7 +50,7 @@ public class SwapReference<T> {
   }
 
   /** Returns whether or not the referent is in swap. */
-  private synchronized boolean isSwappedOut() {
+  private boolean isSwappedOut() {
     return object instanceof SwapToken;
   }
 
