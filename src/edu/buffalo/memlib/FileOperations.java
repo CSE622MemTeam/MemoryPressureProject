@@ -1,4 +1,4 @@
-package com.DroidMemTool.systemmemorymonitor;
+package edu.buffalo.memlib;
 
 import java.io.BufferedWriter;
 import java.io.File;

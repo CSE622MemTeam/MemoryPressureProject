@@ -1,4 +1,4 @@
-package edu.buffalo.swapapp;
+package edu.buffalo.memlib;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;

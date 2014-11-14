@@ -1,4 +1,4 @@
-package edu.buffalo.swapapp;
+package edu.buffalo.memlib;
 
 import java.io.Serializable;
 import java.util.AbstractList;

@@ -1,5 +1,6 @@
-//package edu.buffalo.memlib;
+package edu.buffalo.memlib;
 
+import java.lang.ref.*;
 import java.io.*;
 import java.nio.*;
 import java.nio.channels.*;
@@ -19,6 +20,9 @@ class SwapFile {
   /** The file lock acquired when the swap file is created. */
   private FileLock lock;
 
+  /** A reusable {@code ObjectOutputStream} wrapper. */
+  private SwapObjectOutputStream soos;
+
   /** Create a {@code SwapFile} using the default name. */
   public SwapFile() throws IOException {
     this("swap");
@@ -36,12 +40,14 @@ class SwapFile {
     if (lock == null)
       throw new IOException("Could not lock swap file.");
     swapSpace = ch.map(READ_WRITE, 0, ((long) SWAP_SIZE) << 20);
+    soos = new SwapObjectOutputStream(swapSpace);
   }
 
   public static synchronized SwapFile instance() {
     if (instance == null) try {
       return instance = new SwapFile();
     } catch (Exception e) {
+      e.printStackTrace();
       return instance = null;  // FIXME
     } else {
       return instance;
@@ -60,12 +66,10 @@ class SwapFile {
    */
   public synchronized long put(Serializable object) throws IOException {
     long token = swapSpace.position();
-    OutputStream os = new ByteBufferOutputStream(swapSpace);
 
-    ObjectOutputStream oos = new ObjectOutputStream(os);
-    oos.writeObject(object);
-    oos.close();
+    soos.setBuffer(swapSpace).write(object);
 
+    System.out.println("New token: "+token);
     return token;
   }
 
@@ -107,9 +111,34 @@ class SwapFile {
   }
 }
 
+/**
+ * A wrapper around {@code ObjectOutputStream} which can be dynamically pointed
+ * to a new {@code ByteBuffer}. This allows the {@code ObjectOutputStream} to
+ * be reused.
+ */
+class SwapObjectOutputStream {
+  private ByteBufferOutputStream bbos;
+  private ObjectOutputStream oos;
+
+  public SwapObjectOutputStream(ByteBuffer buffer) throws IOException {
+    bbos = new ByteBufferOutputStream(buffer);
+    oos = new ObjectOutputStream(bbos);
+  }
+
+  public SwapObjectOutputStream setBuffer(ByteBuffer buffer) {
+    bbos.buffer = buffer;
+    return this;
+  }
+
+  public void write(Serializable object) throws IOException {
+    oos.writeObject(object);
+    oos.flush();
+  }
+}
+
 /** An {@code OutputStream} wrapping a {@code ByteBuffer}. */
 class ByteBufferOutputStream extends OutputStream {
-  private ByteBuffer buffer;
+  ByteBuffer buffer;
 
   public ByteBufferOutputStream(ByteBuffer buffer) {
     this.buffer = buffer;
@@ -126,7 +155,7 @@ class ByteBufferOutputStream extends OutputStream {
 
 /** An {@code InputStream} wrapping a {@code ByteBuffer}. */
 class ByteBufferInputStream extends InputStream {
-  private ByteBuffer buffer;
+  ByteBuffer buffer;
 
   public ByteBufferInputStream(ByteBuffer buffer) {
     this.buffer = buffer;

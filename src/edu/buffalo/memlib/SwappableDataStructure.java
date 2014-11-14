@@ -1,6 +1,5 @@
-package edu.buffalo.cse.swappableObjects;
+package edu.buffalo.memlib;
 
-import edu.buffalo.cse.memlib.SwapReference;
 import java.util.*;
 import java.lang.reflect.Proxy;
 import java.lang.reflect.InvocationHandler;
