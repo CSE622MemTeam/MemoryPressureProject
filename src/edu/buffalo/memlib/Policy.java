@@ -6,7 +6,7 @@ public abstract class Policy {
     protected Collection<Swappable> collection;
     
     protected Policy(Collection<Swappable> collection) {
-        this.collection = collection;
+	this.collection = collection;
     }
     
     abstract Swappable pop();
