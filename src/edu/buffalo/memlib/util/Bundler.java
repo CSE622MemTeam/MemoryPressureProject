@@ -102,8 +102,7 @@ final class MLBundle {
 		//else if (o instanceof Parcelable)
 			//bundle.putParcelable(key, (Parcelable) o);
 		else if (Util.isSerializable(o))
-			//bundle.putSerializable(key, (Serializable) o);
-			bundle.put(key, (Serializable) o);
+			bundle.putSerializable(key, (Serializable) o);
 		else
 			throw new RuntimeException("Unable to marshal: "+o);
 		return bundle;

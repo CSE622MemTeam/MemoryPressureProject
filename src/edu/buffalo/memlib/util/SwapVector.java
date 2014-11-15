@@ -8,6 +8,8 @@ import java.util.Vector;
 
 import android.content.Context;
 
+import edu.buffalo.memlib.swap.*;
+
 public class SwapVector<E extends Serializable> extends AbstractList<E> 
 						implements Swappable,
 							   List<E>,

@@ -11,6 +11,9 @@ import android.app.ActivityManager.MemoryInfo;
 import android.os.Bundle;
 import android.util.Log;
 
+import edu.buffalo.memlib.swap.*;
+import edu.buffalo.memlib.util.*;
+
 public class MainActivity extends Activity {
     List<byte[]> byteList= new LinkedList<byte[]>();
 

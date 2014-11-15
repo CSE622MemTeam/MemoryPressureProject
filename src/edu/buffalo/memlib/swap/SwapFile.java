@@ -5,14 +5,19 @@ import java.io.*;
 import java.nio.*;
 import java.nio.channels.*;
 
+import edu.buffalo.memlib.util.Bundler;
+
 import static java.nio.channels.FileChannel.MapMode.*;
 
+/**
+ * A class representing a handle on an individual swap file.
+ */
 class SwapFile {
   /** Global swap file. */
   private static volatile SwapFile instance;
 
   /** The default max swap file size in MB. */
-  public static int SWAP_SIZE = 256;
+  public static int SWAP_SIZE = 1;
 
   /** The file used as swap space. */
   private MappedByteBuffer swapSpace;
@@ -63,6 +68,15 @@ class SwapFile {
 
   /**
    * Swap an object out and return its swap token.
+   */
+  public synchronized long put(Object object) throws IOException {
+    if (object instanceof Serializable)
+      return put((Serializable) object);
+    return put(Bundler.bundle(object));
+  }
+
+  /**
+   * Swap a serializable object out and return its swap token.
    */
   public synchronized long put(Serializable object) throws IOException {
     long token = swapSpace.position();

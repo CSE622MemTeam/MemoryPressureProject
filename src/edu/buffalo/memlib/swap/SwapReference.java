@@ -46,7 +46,7 @@ public class SwapReference<T> {
   /** Swap the referent out. No effect if already swapped out. */
   public synchronized void swapOut() {
     if (object != null && !isSwappedOut())
-      object = (T) Swapper.out(object);
+      object = (T) Swapper.put(object);
   }
 
   /** Returns whether or not the referent is in swap. */
@@ -64,14 +64,4 @@ public class SwapReference<T> {
       throw new IllegalStateException();
     return (SwapToken<T>) object;
   }
-}
-
-/**
- * A token which can be used to recover a swapped object. This class will be
- * moved elsewhere later. For now, it's here only to demonstrate the concept.
- */
-class SwapToken<T> {
-  private long token;
-
-  SwapToken(long token) { this.token = token; }
 }
