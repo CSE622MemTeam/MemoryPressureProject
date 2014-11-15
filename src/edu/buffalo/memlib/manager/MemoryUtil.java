@@ -1,4 +1,4 @@
-package edu.buffalo.memlib;
+package edu.buffalo.memlib.manager;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;

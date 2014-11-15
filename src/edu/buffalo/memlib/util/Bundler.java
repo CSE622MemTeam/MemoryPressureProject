@@ -1,12 +1,10 @@
+package edu.buffalo.memlib.util;
+
 import java.io.*;
 import java.lang.reflect.*;
 
 import android.os.*;
 import java.util.*;
-
-class Bundle extends HashMap<String, Object> {
-	static Bundle EMPTY = new Bundle();
-}
 
 /**
  * Class for automatically bundling and unbundling objects.

@@ -1,4 +1,4 @@
-package edu.buffalo.memlib;
+package edu.buffalo.memlib.swap;
 
 public interface Swappable {
     public boolean swap();

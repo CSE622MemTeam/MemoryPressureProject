@@ -1,4 +1,4 @@
-package edu.buffalo.memlib;
+package edu.buffalo.memlib.manager;
 
 import java.io.BufferedWriter;
 import java.io.File;

@@ -1,4 +1,4 @@
-package edu.buffalo.memlib;
+package edu.buffalo.memlib.swap;
 
 import java.lang.ref.*;
 import java.io.*;

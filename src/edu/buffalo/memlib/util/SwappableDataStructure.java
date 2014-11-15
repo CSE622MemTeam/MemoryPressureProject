@@ -1,4 +1,4 @@
-package edu.buffalo.memlib;
+package edu.buffalo.memlib.util;
 
 import java.util.*;
 import java.lang.reflect.Proxy;

@@ -1,4 +1,4 @@
-package edu.buffalo.memlib;
+package edu.buffalo.memlib.policy;
 
 import java.util.Iterator;
 import java.util.LinkedHashSet;
