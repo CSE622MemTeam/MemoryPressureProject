@@ -13,6 +13,17 @@ import android.os.Environment;
 
 public final class SwapUtil {
 	public static final String FILE_PREPEND = "edu.buffalo.swap.";
+	
+	public static void deleteFile(int id, boolean internal) {
+		Context context = SwapActivity.getSwapContext();
+		if (internal) {
+			context.deleteFile(FILE_PREPEND + id);
+		}
+		else {
+			File file = new File(context.getExternalFilesDir(null), FILE_PREPEND + id);
+			file.delete();
+		}
+	}
 
 	public static FileOutputStream getFileOutputStream(int id, boolean internal) {
 		Context context = SwapActivity.getSwapContext();

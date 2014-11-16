@@ -68,8 +68,9 @@ public class MainActivity extends SwapActivity {
 	    // TODO Auto-generated catch block
 	    e.printStackTrace();
 	}
+	
+		SwapUtil.deleteFile(5, false);
     }
-    
     
     private void allocateMemory(int bytes) {
 	byteList.add(new byte[bytes]);
