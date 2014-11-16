@@ -1,5 +1,8 @@
 package edu.buffalo.memlib.swap;
 
+import java.io.*;
+import java.lang.ref.*;
+import java.util.*;
 
 /** A swappable reference to an object. */
 public class SwapReference<T> {
@@ -56,9 +59,9 @@ public class SwapReference<T> {
    *
    * @throws IllegalStateException If the referent is swapped in.
    */
-  private SwapToken<T> token() {
+  private SwapToken token() {
     if (!isSwappedOut())
       throw new IllegalStateException();
-    return (SwapToken<T>) object;
+    return (SwapToken) object;
   }
 }
