@@ -6,33 +6,24 @@ import java.util.List;
 import java.util.RandomAccess;
 import java.util.Vector;
 
-import android.content.Context;
-
-import edu.buffalo.memlib.swap.*;
+import edu.buffalo.memlib.swap.SwapReference;
+import edu.buffalo.memlib.swap.Swappable;
 
 public class SwapVector<E extends Serializable> extends AbstractList<E> 
-						implements Swappable,
-							   List<E>,
-							   RandomAccess, 
-							   Cloneable, 
-							   java.io.Serializable {
-    protected int capacityIncrement;
-    protected Context context;
-    protected boolean internal = true;
-    protected Vector<E> vector;
-    private static final long serialVersionUID = -8062241491045229885L;
-    
-    public SwapVector(int initialCapacity, int capacityIncrement, Context context) {
-	super();
-	if (initialCapacity < 0)
-	    throw new IllegalArgumentException("Illegal Capacity: "+ initialCapacity);
+												implements Swappable,
+														   List<E>,
+														   RandomAccess, 
+														   Cloneable, 
+														   java.io.Serializable {
+	private SwapReference<Vector<E>> ref;
 	
-	this.capacityIncrement = capacityIncrement;
-	this.context = context;
-    }
-
+	public SwapVector() {
+		ref = new SwapReference<Vector<E>>(new Vector<E>());
+	}
+	
     @Override
     public E get(int location) {
+    	
 	// TODO Auto-generated method stub
 	return null;
     }

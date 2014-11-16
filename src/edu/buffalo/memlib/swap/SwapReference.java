@@ -1,8 +1,5 @@
 package edu.buffalo.memlib.swap;
 
-import java.io.*;
-import java.lang.ref.*;
-import java.util.*;
 
 /** A swappable reference to an object. */
 public class SwapReference<T> {

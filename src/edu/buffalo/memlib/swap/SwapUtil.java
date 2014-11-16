@@ -14,7 +14,8 @@ import android.os.Environment;
 public final class SwapUtil {
 	public static final String FILE_PREPEND = "edu.buffalo.swap.";
 
-	public static FileOutputStream getFileOutputStream(Context context, int id, boolean internal) {
+	public static FileOutputStream getFileOutputStream(int id, boolean internal) {
+		Context context = SwapActivity.getSwapContext();
 		if (internal) {
 			try {
 				return context.openFileOutput(FILE_PREPEND + id, Context.MODE_PRIVATE);
@@ -39,7 +40,8 @@ public final class SwapUtil {
 		}
 	}
 
-	public static FileInputStream getFileInputStream(Context context, int id, boolean internal) {
+	public static FileInputStream getFileInputStream(int id, boolean internal) {
+		Context context = SwapActivity.getSwapContext();
 		if (internal) {
 			try {
 				return context.openFileInput(FILE_PREPEND + id);
@@ -64,10 +66,8 @@ public final class SwapUtil {
 		}
 	}
 
-	public static ObjectOutputStream getObjectOutputStream(Context context, 
-			int id, 
-			boolean internal) {
-		FileOutputStream fos = getFileOutputStream(context, id, internal);
+	public static ObjectOutputStream getObjectOutputStream(int id, boolean internal) {
+		FileOutputStream fos = getFileOutputStream(id, internal);
 		if (fos != null) {
 			try {
 				return new ObjectOutputStream(fos);
@@ -81,10 +81,8 @@ public final class SwapUtil {
 		}
 	}
 
-	public static ObjectInputStream getObjectInputStream(Context context,
-			int id, 
-			boolean internal) {
-		FileInputStream fis = getFileInputStream(context, id, internal);
+	public static ObjectInputStream getObjectInputStream(int id, boolean internal) {
+		FileInputStream fis = getFileInputStream(id, internal);
 		if (fis != null) {
 			try {
 				return new ObjectInputStream(fis);

@@ -3,6 +3,7 @@ package edu.buffalo.memlib.util;
 import java.io.File;
 import java.util.Scanner;
 
+import edu.buffalo.memlib.swap.SwapActivity;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.ActivityManager.MemoryInfo;
@@ -30,15 +31,17 @@ public final class MemUtil extends Activity {
 		return scanProcForField("/proc/meminfo", "MemFree");
 	}
 
-	public static long getAvailableMem(Activity activity) {
-		ActivityManager activityManager =  (ActivityManager) activity.getSystemService(Context.ACTIVITY_SERVICE);
+	public static long getAvailableMem() {
+		Context context = SwapActivity.getSwapContext();
+		ActivityManager activityManager =  (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
 		MemoryInfo memoryInfo = new MemoryInfo();
 		activityManager.getMemoryInfo(memoryInfo);
 		return memoryInfo.availMem;
 	}
 
-	public static long getThreshold(Activity activity) {
-		ActivityManager activityManager =  (ActivityManager) activity.getSystemService(Context.ACTIVITY_SERVICE);
+	public static long getThreshold() {
+		Context context = SwapActivity.getSwapContext();
+		ActivityManager activityManager =  (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
 		MemoryInfo memoryInfo = new MemoryInfo();
 		activityManager.getMemoryInfo(memoryInfo);
 		return memoryInfo.threshold;

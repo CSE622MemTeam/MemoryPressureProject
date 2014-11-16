@@ -14,14 +14,13 @@ import android.util.Log;
 import edu.buffalo.memlib.swap.*;
 import edu.buffalo.memlib.util.*;
 
-public class MainActivity extends Activity {
+public class MainActivity extends SwapActivity {
     List<byte[]> byteList= new LinkedList<byte[]>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-	super.onCreate(savedInstanceState);
-	showAvailableMemory();
-	
+    	super.onCreate(savedInstanceState);
+    	showAvailableMemory();
     }
     
     private void showAvailableMemory() {
@@ -30,7 +29,7 @@ public class MainActivity extends Activity {
 	activityManager.getMemoryInfo(memoryInfo);
 	Log.i("memory footprint", "" + memoryInfo.availMem / memoryInfo.totalMem + "%");
 	Log.i("TOTAL MEMORY", "" + (MemUtil.getTotalMem() >> 20));
-	Log.i("AVAILABLE MEMORY", "" + (MemUtil.getAvailableMem(this) >> 20));
+	Log.i("AVAILABLE MEMORY", "" + (MemUtil.getAvailableMem() >> 20));
 	Log.i("FREE MEMORY", "" + (MemUtil.getFreeMem() >> 20));
 	Log.i("THRESHOLD MEMORY", "" + (memoryInfo.threshold >> 20));
 
@@ -46,7 +45,7 @@ public class MainActivity extends Activity {
 
 	FileOutputStream fos;
 	try {
-	    fos = SwapUtil.getFileOutputStream(this, 5, false);
+	    fos = SwapUtil.getFileOutputStream(5, false);
 	    fos.write(string.getBytes());
 	    fos.close();
 	} catch (Exception e) {
@@ -56,7 +55,7 @@ public class MainActivity extends Activity {
 	
 	FileInputStream fis;
 	try {
-	    fis = SwapUtil.getFileInputStream(this, 5, false);
+	    fis = SwapUtil.getFileInputStream(5, false);
 	    StringBuilder builder = new StringBuilder();
 	    int ch;
 	    while((ch = fis.read()) != -1){
