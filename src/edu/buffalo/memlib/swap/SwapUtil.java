@@ -15,12 +15,12 @@ public final class SwapUtil {
 	public static final String FILE_PREPEND = "edu.buffalo.swap.";
 	
 	/**
-	 * Deletes a swap file on internal storage.
+	 * Deletes a swap file on globally set medium.
 	 * 
 	 * @param id - file id
 	 */
 	public static void deleteFile(long id) {
-		deleteFile(id, true);
+		deleteFile(id, SwapActivity.isInternal());
 	}
 	
 	/**
@@ -32,22 +32,25 @@ public final class SwapUtil {
 	public static void deleteFile(long id, boolean internal) {
 		Context context = SwapActivity.getSwapContext();
 		if (internal) {
-			context.deleteFile(FILE_PREPEND + id);
+			if (fileExists(id, internal))
+				context.deleteFile(FILE_PREPEND + id);
 		}
 		else {
-			File file = new File(context.getExternalFilesDir(null), FILE_PREPEND + id);
-			file.delete();
+			if (fileExists(id, internal)) {
+				File file = new File(context.getExternalFilesDir(null), FILE_PREPEND + id);
+				file.delete();
+			}
 		}
 	}
 	
 	/**
-	 * Checks if a file exists on internal storage.
+	 * Checks if a file exists on globally set medium.
 	 * 
 	 * @param id - file id
 	 * @return true if file exists, otherwise false
 	 */
 	public static boolean fileExists(long id) {
-		return fileExists(id, true);
+		return fileExists(id, SwapActivity.isInternal());
 	}
 	
 	/**
@@ -66,14 +69,14 @@ public final class SwapUtil {
 	}
 	
 	/**
-	 * Acquires the swap file output stream on internal storage.
+	 * Acquires the swap file output stream on globally set medium.
 	 * 
 	 * @param id - file id
-	 * @return the swap file output stream on internal storage
+	 * @return the swap file output stream on globally set medium
 	 * @throws FileNotFoundException
 	 */
 	public static FileOutputStream getFileOutputStream(long id) throws FileNotFoundException {
-		return getFileOutputStream(id, true);
+		return getFileOutputStream(id, SwapActivity.isInternal());
 	}
 
 	/**
@@ -101,18 +104,18 @@ public final class SwapUtil {
 	}
 	
 	/**
-	 * Acquires the swap file input stream on internal storage.
+	 * Acquires the swap file input stream on globally set medium.
 	 * 
 	 * @param id - file id
-	 * @return the swap file input stream on internal storage
+	 * @return the swap file input stream on globally set medium
 	 * @throws FileNotFoundException
 	 */
 	public static FileInputStream getFileInputStream(long id) throws FileNotFoundException {
-		return getFileInputStream(id, true);
+		return getFileInputStream(id, SwapActivity.isInternal());
 	}
 
 	/**
-	 * Acquires the swap file input stream on selected medium.
+	 * Acquires the swap file input stream on globally set medium.
 	 * 
 	 * @param id - file id
 	 * @param internal - true for internal storage, otherwise external
@@ -136,14 +139,14 @@ public final class SwapUtil {
 	}
 	
 	/**
-	 * Acquires the swap file object output stream on internal storage.
+	 * Acquires the swap file object output stream on globally set medium.
 	 * 
 	 * @param id - file id
-	 * @return the swap file object output stream on internal storage
+	 * @return the swap file object output stream on globally set medium
 	 * @throws FileNotFoundException
 	 */
 	public static ObjectOutputStream getObjectOutputStream(long id) throws IOException {
-		return getObjectOutputStream(id, true);
+		return getObjectOutputStream(id, SwapActivity.isInternal());
 	}
 
 	/**
@@ -160,14 +163,14 @@ public final class SwapUtil {
 	}
 	
 	/**
-	 * Acquires the swap file object input stream on internal storage.
+	 * Acquires the swap file object input stream on globally set medium.
 	 * 
 	 * @param id - file id
-	 * @return the swap file object input stream on internal storage
+	 * @return the swap file object input stream on globally set medium
 	 * @throws FileNotFoundException
 	 */
 	public static ObjectInputStream getObjectInputStream(long id) throws IOException {
-		return getObjectInputStream(id, true);
+		return getObjectInputStream(id, SwapActivity.isInternal());
 	}
 
 	/**

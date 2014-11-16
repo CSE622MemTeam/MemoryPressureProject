@@ -46,7 +46,7 @@ public class SwapReference<T> {
     	SwapToken token = (SwapToken) object;
     	try {
 			ObjectInputStream ois = SwapUtil.getObjectInputStream(token.getTokenValue(), token.isInternal());
-			object = (T) ois.readObject();
+			object = ois.readObject();
 			ois.close();
 			SwapUtil.deleteFile(token.getTokenValue(), token.isInternal());
 		} catch (IOException e) {
@@ -68,7 +68,7 @@ public class SwapReference<T> {
 			ObjectOutputStream oos = SwapUtil.getObjectOutputStream(token.getTokenValue(), token.isInternal());
 			oos.writeObject(object);
 			oos.close();
-			object = (T) token;
+			object = token;
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -81,14 +81,14 @@ public class SwapReference<T> {
 	  return object instanceof SwapToken;
   }
 
-  /**
-   * Get the swap token if we have one.
-   *
-   * @throws IllegalStateException If the referent is swapped in.
-   */
-  private SwapToken token() {
-    if (!isSwappedOut())
-      throw new IllegalStateException();
-    return (SwapToken) object;
-  }
+//  /**
+//   * Get the swap token if we have one.
+//   *
+//   * @throws IllegalStateException If the referent is swapped in.
+//   */
+//  private SwapToken token() {
+//    if (!isSwappedOut())
+//      throw new IllegalStateException();
+//    return (SwapToken) object;
+//  }
 }
