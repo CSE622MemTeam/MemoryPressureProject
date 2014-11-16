@@ -14,7 +14,7 @@ import android.os.Environment;
 public final class SwapUtil {
 	public static final String FILE_PREPEND = "edu.buffalo.swap.";
 	
-	public static void deleteFile(int id, boolean internal) {
+	public static void deleteFile(long id, boolean internal) {
 		Context context = SwapActivity.getSwapContext();
 		if (internal) {
 			context.deleteFile(FILE_PREPEND + id);
@@ -25,7 +25,7 @@ public final class SwapUtil {
 		}
 	}
 
-	public static FileOutputStream getFileOutputStream(int id, boolean internal) {
+	public static FileOutputStream getFileOutputStream(long id, boolean internal) {
 		Context context = SwapActivity.getSwapContext();
 		if (internal) {
 			try {
@@ -51,7 +51,7 @@ public final class SwapUtil {
 		}
 	}
 
-	public static FileInputStream getFileInputStream(int id, boolean internal) {
+	public static FileInputStream getFileInputStream(long id, boolean internal) {
 		Context context = SwapActivity.getSwapContext();
 		if (internal) {
 			try {
@@ -77,7 +77,7 @@ public final class SwapUtil {
 		}
 	}
 
-	public static ObjectOutputStream getObjectOutputStream(int id, boolean internal) {
+	public static ObjectOutputStream getObjectOutputStream(long id, boolean internal) {
 		FileOutputStream fos = getFileOutputStream(id, internal);
 		if (fos != null) {
 			try {
@@ -92,7 +92,7 @@ public final class SwapUtil {
 		}
 	}
 
-	public static ObjectInputStream getObjectInputStream(int id, boolean internal) {
+	public static ObjectInputStream getObjectInputStream(long id, boolean internal) {
 		FileInputStream fis = getFileInputStream(id, internal);
 		if (fis != null) {
 			try {
