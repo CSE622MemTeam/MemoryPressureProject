@@ -1,7 +1,7 @@
 package edu.buffalo.memlib.swap;
 
 public interface Swappable {
-    public boolean swap();
+    public void swapIn();
     
-    public boolean unswap();
+    public void swapOut(boolean internal);
 }

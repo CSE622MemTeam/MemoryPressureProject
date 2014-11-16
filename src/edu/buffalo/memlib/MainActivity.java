@@ -53,6 +53,9 @@ public class MainActivity extends SwapActivity {
 	    e.printStackTrace();
 	}
 	
+
+	System.out.println(SwapUtil.fileExists(5, false));
+	
 	FileInputStream fis;
 	try {
 	    fis = SwapUtil.getFileInputStream(5, false);
@@ -68,8 +71,15 @@ public class MainActivity extends SwapActivity {
 	    // TODO Auto-generated catch block
 	    e.printStackTrace();
 	}
-	
 		SwapUtil.deleteFile(5, false);
+		System.out.println(SwapUtil.fileExists(5, false));
+		
+		SwapVector<String> vector = new SwapVector<String>();
+		vector.add("cat");
+		vector.add("dog");
+		vector.swapOut(false);
+		System.out.println(vector.get(0));
+		System.out.println(vector.get(1));
     }
     
     private void allocateMemory(int bytes) {

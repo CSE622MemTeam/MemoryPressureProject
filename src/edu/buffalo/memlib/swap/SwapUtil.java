@@ -41,6 +41,31 @@ public final class SwapUtil {
 	}
 	
 	/**
+	 * Checks if a file exists on internal storage.
+	 * 
+	 * @param id - file id
+	 * @return true if file exists, otherwise false
+	 */
+	public static boolean fileExists(long id) {
+		return fileExists(id, true);
+	}
+	
+	/**
+	 * Checks if a file exists on selected medium
+	 * 
+	 * @param id - file id
+	 * @param internal - true for internal storage, otherwise external
+	 * @return true if file exists, otherwise false
+	 */
+	public static boolean fileExists(long id, boolean internal) {
+		Context context = SwapActivity.getSwapContext();
+		if (internal)
+			return context.getFileStreamPath(FILE_PREPEND + id).exists();
+		else
+			return new File(context.getExternalFilesDir(null), FILE_PREPEND + id).exists();
+	}
+	
+	/**
 	 * Acquires the swap file output stream on internal storage.
 	 * 
 	 * @param id - file id

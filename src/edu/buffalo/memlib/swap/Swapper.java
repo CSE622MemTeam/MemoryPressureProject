@@ -10,8 +10,8 @@ class Swapper {
   static SwapToken put(Object object) { return null; }
 
   /** Recover an object from swap using its swap token. */
-  static <T> T get(SwapToken<T> token) { return null; }
+  static <T> T get(SwapToken token) { return null; }
 
   /** Free a swapped object. */
-  static <T> void free(SwapToken<T> token) { }
+  static <T> void free(SwapToken token) { }
 }

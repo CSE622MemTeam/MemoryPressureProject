@@ -51,11 +51,11 @@ public class SwapVector<E extends Serializable> extends AbstractList<E>
 
     @Override
     public void swapIn() {
-    	ref.swapOut();
+    	ref.swapIn();
     }
 
     @Override
-    public void swapOut() {
-    	ref.swapOut();
+    public void swapOut(boolean internal) {
+    	ref.swapOut(internal);
     }
 }
