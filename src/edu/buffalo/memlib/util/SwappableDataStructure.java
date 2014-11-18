@@ -12,18 +12,18 @@ public class SwappableDataStructure implements InvocationHandler{
 	private Object T;
 
 	/** initiate with null */
-	SwappableDataStructure(){
+	public SwappableDataStructure(){
 		swapReference = new SwapReference();
 	}
 
 	/** Initiate  with an object*/
-	SwappableDataStructure(Object O){
+	public SwappableDataStructure(Object O){
 		T = O;
 		swapReference = new SwapReference(T);
 	}
 
 	//Creating an ArrayList proxy
-	<T> List<T> getArrayList(){
+	public <T> List<T> getArrayList(){
 		List proxy = (List) Proxy.newProxyInstance(
 				SwappableDataStructure.class.getClassLoader(),
 				new Class[] { List.class },
@@ -32,7 +32,7 @@ public class SwappableDataStructure implements InvocationHandler{
 	}	
 
 	//Creating LinkedList proxy
-	<T> List<T> getLinkedList(){
+	public <T> List<T> getLinkedList(){
 		List proxy = (List) Proxy.newProxyInstance(
 				SwappableDataStructure.class.getClassLoader(),
 				new Class[] { List.class },
@@ -41,7 +41,7 @@ public class SwappableDataStructure implements InvocationHandler{
 	}
 
 	//Creating Hashpmap proxy
-	<K,V> Map<K,V> getHashMap(){
+	public <K,V> Map<K,V> getHashMap(){
 		Map proxy = (Map) Proxy.newProxyInstance(
 				SwappableDataStructure.class.getClassLoader(),
 				new Class[] { Map.class },
@@ -50,7 +50,7 @@ public class SwappableDataStructure implements InvocationHandler{
 	}
 
 	//Creating Set proxy
-	<T> Set<T> getHashSet(){
+	public <T> Set<T> getHashSet(){
 		Set proxy = (Set) Proxy.newProxyInstance(
 				SwappableDataStructure.class.getClassLoader(),
 				new Class[] { Set.class },
