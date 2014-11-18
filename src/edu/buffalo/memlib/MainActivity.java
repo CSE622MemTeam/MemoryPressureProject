@@ -80,6 +80,17 @@ public class MainActivity extends SwapActivity {
 		vector.swapOut(false);
 		System.out.println(vector.get(0));
 		System.out.println(vector.get(1));
+
+		SwappableDataStructure sds = new SwappableDataStructure();
+		List list2= sds.getLinkedList();
+		if(list2 == null)throw new NullPointerException();                        
+		list2.add(5);
+		list2.add(6);
+		list2.get(0);
+		for (Object i : list2)
+			System.out.print(i);
+		System.out.println();
+
     }
     
     private void allocateMemory(int bytes) {
