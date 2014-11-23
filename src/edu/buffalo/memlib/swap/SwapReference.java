@@ -1,16 +1,14 @@
 package edu.buffalo.memlib.swap;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.*;
 
 /** A swappable reference to an object. */
-public class SwapReference<T> {
+public class SwapReference<T> implements Swappable {
   /**
    * The referent or swap token. This will either be a SwapToken object, or
    * something else (including null).
    */
-  private Object object;
+  private T object;
 
   /** Create a SwapReference with a null referent. */
   public SwapReference() { this(null); }
@@ -22,9 +20,8 @@ public class SwapReference<T> {
    * Get the referent. If it is swapped out, it will be swapped in.
    */
   public synchronized T get() {
-    if (isSwappedOut())
-      swapIn();
-    return (T) object;
+    swapIn();
+    return object;
   }
 
   /**
@@ -32,63 +29,49 @@ public class SwapReference<T> {
    * will be freed.
    */
   public synchronized void set(T object) {
-    if (isSwappedOut()) {
-    	SwapToken token = (SwapToken) object;
-    	SwapUtil.deleteFile(token.getTokenValue(), token.isInternal());
+    if (isSwappedOut()) try {
+      Swap.free(token());
+    } catch (IOException ioe) {
+      // Trouble when freeing. Just ignore.
     }
-//      Swapper.free(token());
+
     this.object = object;
   }
 
   /** Bring the referent in from swap. No effect if already swapped in. */
   public synchronized void swapIn() {
-    if (isSwappedOut()) {
-    	SwapToken token = (SwapToken) object;
-    	try {
-			ObjectInputStream ois = SwapUtil.getObjectInputStream(token.getTokenValue(), token.isInternal());
-			object = ois.readObject();
-			ois.close();
-			SwapUtil.deleteFile(token.getTokenValue(), token.isInternal());
-		} catch (IOException e) {
-			e.printStackTrace();
-		} 
-    	catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		}
-    	
+    if (isSwappedOut()) try {
+      object = Swap.swapIn(token());
+    } catch (IOException e) {
+      // Couldn't recover object. Let's treat this like an OOM error.
+      throw new OutOfMemoryError("Swapping in");
+    } catch (ClassNotFoundException e) {
+      // This should never happen if the framework is working and being used
+      // right. Therefore, if it does happen, it's a programmer error.
+      throw new Error("Corrupt swap file", e);
     }
-//      object = Swapper.get(token());
   }
 
   /** Swap the referent out. No effect if already swapped out. */
-  public synchronized void swapOut(boolean internal) {
-    if (object != null && !isSwappedOut()) {
-    	SwapToken token = new SwapToken(internal);
-    	try {
-			ObjectOutputStream oos = SwapUtil.getObjectOutputStream(token.getTokenValue(), token.isInternal());
-			oos.writeObject(object);
-			oos.close();
-			object = token;
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+  public synchronized void swapOut() {
+    if (object != null && !isSwappedOut()) try {
+      object = (T) Swap.swapOut(object);
+    } catch (IOException e) {
+      // Couldn't swap object. Let's treat this like an OOM error.
+      throw new OutOfMemoryError("Swapping out");
     }
-//      object = (T) Swapper.put(object);
   }
 
-  /** Returns whether or not the referent is in swap. */
-  private boolean isSwappedOut() {
-	  return object instanceof SwapToken;
+  /** Returns true if the referent is swapped out. */
+  public synchronized final boolean isSwappedOut() {
+    return object instanceof Swap.Token;
   }
 
-//  /**
-//   * Get the swap token if we have one.
-//   *
-//   * @throws IllegalStateException If the referent is swapped in.
-//   */
-//  private SwapToken token() {
-//    if (!isSwappedOut())
-//      throw new IllegalStateException();
-//    return (SwapToken) object;
-//  }
+  /**
+   * Returns the swap token if we're swapped out. It is an error to call this
+   * if the referent is not swapped out.
+   */
+  private Swap.Token<T> token() {
+    return (Swap.Token<T>) object;
+  }
 }

@@ -1,17 +1,14 @@
 package edu.buffalo.memlib.swap;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.*;
 
 import android.content.Context;
 import android.os.Environment;
 
-public final class SwapUtil {
+/**
+ * Various file system-related tasks used in swapping.
+ */
+final class SwapUtil {
 	public static final String FILE_PREPEND = "edu.buffalo.swap.";
 	
 	/**
@@ -22,7 +19,7 @@ public final class SwapUtil {
 	public static void deleteFile(long id) {
 		deleteFile(id, SwapActivity.isInternal());
 	}
-	
+
 	/**
 	 * Deletes a swap file on selected medium.
 	 * 
@@ -42,7 +39,7 @@ public final class SwapUtil {
 			}
 		}
 	}
-	
+
 	/**
 	 * Checks if a file exists on globally set medium.
 	 * 
@@ -52,7 +49,7 @@ public final class SwapUtil {
 	public static boolean fileExists(long id) {
 		return fileExists(id, SwapActivity.isInternal());
 	}
-	
+
 	/**
 	 * Checks if a file exists on selected medium
 	 * 
@@ -67,7 +64,7 @@ public final class SwapUtil {
 		else
 			return new File(context.getExternalFilesDir(null), FILE_PREPEND + id).exists();
 	}
-	
+
 	/**
 	 * Acquires the swap file output stream on globally set medium.
 	 * 
@@ -102,7 +99,7 @@ public final class SwapUtil {
 			}
 		}
 	}
-	
+
 	/**
 	 * Acquires the swap file input stream on globally set medium.
 	 * 
@@ -137,7 +134,7 @@ public final class SwapUtil {
 			}
 		}
 	}
-	
+
 	/**
 	 * Acquires the swap file object output stream on globally set medium.
 	 * 
@@ -161,7 +158,7 @@ public final class SwapUtil {
 		FileOutputStream fos = getFileOutputStream(id, internal);
 		return new ObjectOutputStream(fos);
 	}
-	
+
 	/**
 	 * Acquires the swap file object input stream on globally set medium.
 	 * 
