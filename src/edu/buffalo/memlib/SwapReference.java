@@ -10,11 +10,21 @@ public class SwapReference<T> {
    */
   private T object;
 
+  private SwapReference<?> next, prev;
+  static SwapReference<?> head, tail;
+
   /** Create a SwapReference with a null referent. */
   public SwapReference() { this(null); }
 
   /** Create a SwapReference referring to the given object. */
-  public SwapReference(T object) { this.object = object; }
+  public SwapReference(T object) {
+    this.object = object;
+    insertIntoList(this);
+  }
+
+  private static synchronized insertIntoList(SwapReference<?> ref) {
+    // TODO: bwross
+  }
 
   /**
    * Get the referent. If it is swapped out, it will be swapped in.

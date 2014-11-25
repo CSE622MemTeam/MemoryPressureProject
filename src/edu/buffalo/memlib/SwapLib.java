@@ -8,11 +8,8 @@ import edu.buffalo.memlib.swap.Swap;
  * Global configuration interface.
  */
 public final class SwapLib {
-  public static void setSwapLocation(String path) {
-    setSwapLocation(new File(path));
-  }
-
-  public static void setSwapLocation(File dir) {
-    Swap.setRoot(dir);
+  public static void setPolicy(Policy policy) {
+    Swap.setRoot(policy.swapPath);
+    SwapManager.setPolicy(policy);
   }
 }
