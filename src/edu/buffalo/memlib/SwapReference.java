@@ -3,7 +3,7 @@ package edu.buffalo.memlib.swap;
 import java.io.*;
 
 /** A swappable reference to an object. */
-public class SwapReference<T> implements Swappable {
+public class SwapReference<T> {
   /**
    * The referent or swap token. This will either be a SwapToken object, or
    * something else (including null).
