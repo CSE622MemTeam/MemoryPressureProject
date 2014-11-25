@@ -8,10 +8,13 @@ public class SwapReference<T> {
    * The referent or swap token. This will either be a SwapToken object, or
    * something else (including null).
    */
-  private T object;
+  private Object object;
 
+  /** Neighbor elements in reference list. */
   private SwapReference<?> next, prev;
-  static SwapReference<?> head, tail;
+
+  /** Head and tail of global reference list. Head == LRU. */
+  private static SwapReference<?> head, tail;
 
   /** Create a SwapReference with a null referent. */
   public SwapReference() { this(null); }
@@ -19,19 +22,20 @@ public class SwapReference<T> {
   /** Create a SwapReference referring to the given object. */
   public SwapReference(T object) {
     this.object = object;
-    insertIntoList(this);
+    updateAccessList();
   }
 
-  private static synchronized insertIntoList(SwapReference<?> ref) {
-    // TODO: bwross
+  /** Used interally to create a SwapReference which is not swapped in. */
+  SwapReference(Swap.Token<T> token) {
+    object = token;
   }
 
   /**
    * Get the referent. If it is swapped out, it will be swapped in.
    */
   public synchronized T get() {
-    swapIn();
-    return object;
+    swapIn();  // Always updates position in LRU list.
+    return (T) object;
   }
 
   /**
@@ -46,10 +50,14 @@ public class SwapReference<T> {
     }
 
     this.object = object;
+    updateAccessList();
   }
 
   /** Bring the referent in from swap. No effect if already swapped in. */
   public synchronized void swapIn() {
+    // Do this even if swapped in to help get().
+    updateAccessList();
+
     if (isSwappedOut()) try {
       object = Swap.swapIn(token());
     } catch (IOException e) {
@@ -66,8 +74,11 @@ public class SwapReference<T> {
   public synchronized void swapOut() {
     if (object != null && !isSwappedOut()) try {
       object = (T) Swap.swapOut(object);
+      updateAccessList();
     } catch (IOException e) {
-      // Couldn't swap object. Let's treat this like an OOM error.
+      // Couldn't swap object. Let's treat this like an OOM error for now.
+      // Really we should throw some checked exception to force the caller to
+      // deal with swap failing.
       throw new OutOfMemoryError("Swapping out");
     }
   }
@@ -83,5 +94,45 @@ public class SwapReference<T> {
    */
   private Swap.Token<T> token() {
     return (Swap.Token<T>) object;
+  }
+
+  /**
+   * Swap out the least recently used SwapReference. Returns true if there was
+   * something to swap out; false otherwise.
+   */
+  static synchronized boolean swapOutLeastUsed() {
+    if (head == null)
+      return false;
+    head.swapOut();
+    return true;
+  }
+
+  /**
+   * Call this whenever the SwapReference is accessed or changed. This updates
+   * the SwapReference's position in the global reference list, or removes it
+   * if it has been swapped out (or is null).
+   */
+  private synchronized void updateAccessList() {
+    synchronized (SwapReference.class) {
+      // Remove from list if necessary.
+      if (prev != null) prev.next = next;
+      if (next != null) next.prev = prev;
+      if (head == this) head = next;
+      if (tail == this) tail = prev;
+      prev = next = null;
+
+      // Don't (re)insert if unnecessary.
+      if (object == null || isSwappedOut())
+        return;
+
+      // Append to list.
+      if (tail != null) {
+        tail.next = this;
+        this.prev = tail;
+        tail = this;
+      } else {
+        head = tail = this;
+      }
+    }
   }
 }
