@@ -9,59 +9,27 @@ import edu.buffalo.memlib.swap.*;
 
 public class SwappableDataStructure implements InvocationHandler{
 	private SwapReference swapReference;
-	private Object T;
 
 	/** initiate with null */
 	public SwappableDataStructure(){
 		swapReference = new SwapReference();
 	}
 
-	/** Initiate  with an object*/
-	public SwappableDataStructure(Object O){
-		T = O;
-		swapReference = new SwapReference(T);
-	}
-
-	//Creating an ArrayList proxy
-	public <T> List<T> getArrayList(){
-		List proxy = (List) Proxy.newProxyInstance(
-				SwappableDataStructure.class.getClassLoader(),
-				new Class[] { List.class },
-				new SwappableDataStructure(new ArrayList()));
-		return proxy;
-	}	
-
-	//Creating LinkedList proxy
-	public <T> List<T> getLinkedList(){
-		List proxy = (List) Proxy.newProxyInstance(
-				SwappableDataStructure.class.getClassLoader(),
-				new Class[] { List.class },
-				new SwappableDataStructure(new LinkedList()));
-		return proxy;
-	}
-
-	//Creating Hashpmap proxy
-	public <K,V> Map<K,V> getHashMap(){
-		Map proxy = (Map) Proxy.newProxyInstance(
-				SwappableDataStructure.class.getClassLoader(),
-				new Class[] { Map.class },
-				new SwappableDataStructure(new HashMap()));
-		return proxy;
-	}
-
-	//Creating Set proxy
-	public <T> Set<T> getHashSet(){
-		Set proxy = (Set) Proxy.newProxyInstance(
-				SwappableDataStructure.class.getClassLoader(),
-				new Class[] { Set.class },
-				new SwappableDataStructure(new HashSet()));
-		return proxy;
-	}
+	/**
+ 		Create proxy object which proxies Object o which implements Class c
+	*/
+	public Object getSwappableObject(Class c, Object o){
+                Object proxy =  Proxy.newProxyInstance(
+                                SwappableDataStructure.class.getClassLoader(),
+                                new Class[] { c },
+                                new SwappableDataStructure(o));
+                return proxy;
+        }
 
 	/** 
 		Any function call will pass through here and 
 		swapReference will swap in if the object is swapped out 
-		*/	
+	*/	
 	public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
 		//System.out.println("Method "+ method.getName()+" is called");
 		swapReference.get();
@@ -73,38 +41,16 @@ public class SwappableDataStructure implements InvocationHandler{
 
 	public static void main(String[] args){
 		SwappableDataStructure sds = new SwappableDataStructure();
-		List list= sds.getArrayList();
-
-		//Test arrayList
-		if(list == null)throw new NullPointerException();			
-		list.add(5);
-		list.add(6);
-		list.get(0);
-		for (Object i : list)
-			System.out.print(i);
-		//Test LinkedList
-		List list2= sds.getLinkedList();
-		if(list2 == null)throw new NullPointerException();                        
-		list2.add(5);
-		list2.add(6);
-		list2.get(0);
-		for (Object i : list2)
-			System.out.print(i);
-		System.out.println();
-
-		//Test HashMap
-		Map map = sds.getHashMap();
-		if(map == null)throw new NullPointerException();
-		map.put(5, 10);
-		map.put(6,11);
-		map.get(5);
-		System.out.println(map.get(5));
-
-		//Test Set 	
-		Set set = sds.getHashSet();
+		
+		Set set = (Set)sds.getData(Set.class, new HashSet());
 		if(set == null)throw new NullPointerException();
 		set.add(5);
 		set.add(100);
 		System.out.println(set);
+                
+		List l = (List)sds.getData(List.class, new LinkedList());
+		
+		Map<Integer,String> m = (Map)sds.getData(Map.class, new HashMap<Integer,String>());
+
 	}
 }
