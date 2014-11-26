@@ -1,4 +1,4 @@
-package edu.buffalo.memlib.swap;
+package edu.buffalo.memlib;
 
 import java.io.*;
 
@@ -22,12 +22,8 @@ public class SwapReference<T> {
   /** Create a SwapReference referring to the given object. */
   public SwapReference(T object) {
     this.object = object;
+    SwapManager.initialize();
     updateAccessList();
-  }
-
-  /** Used interally to create a SwapReference which is not swapped in. */
-  SwapReference(Swap.Token<T> token) {
-    object = token;
   }
 
   /**

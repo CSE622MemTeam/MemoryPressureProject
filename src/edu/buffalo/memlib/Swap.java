@@ -1,18 +1,18 @@
-package edu.buffalo.memlib.swap;
+package edu.buffalo.memlib;
 
 import java.io.*;
 
 /**
  * All swap-related operations and configurations are performed through this
- * class.
+ * class. This class should only be used internally.
  */
-public final class Swap {
+final class Swap {
   /** The default base name of the swap directory. */
   // TODO: Make this configurable.
   static String swapDirName = ".swap";
 
   /** Swap an object out and return its swap token. */
-  public static synchronized <T> Token<T> swapOut(T t)
+  static synchronized <T> Token<T> swapOut(T t)
   throws IOException {
     Token<T> token = new Token<T>();
     SwapDirectory.open(token, true).swapOut(t);
@@ -20,7 +20,7 @@ public final class Swap {
   }
 
   /** Swap the object with the given swap token back in. */
-  public static synchronized <T> T swapIn(Token<T> token)
+  static synchronized <T> T swapIn(Token<T> token)
   throws IOException, ClassNotFoundException {
     T t = SwapDirectory.open(token, false).swapIn();
     SwapDirectory.free(token);
@@ -28,18 +28,18 @@ public final class Swap {
   }
 
   /** Free a swapped out object, given its token. */
-  public static synchronized void free(Token<?> token)
+  static synchronized void free(Token<?> token)
   throws IOException {
     SwapDirectory.free(token);
   }
 
   /** Configure the location for the swap directory. */
-  public static synchronized void setRoot(String path) {
+  static synchronized void setRoot(String path) {
     setRoot(new File(path));
   }
 
   /** Configure the location for the swap directory. */
-  public static synchronized void setRoot(File dir) {
+  static synchronized void setRoot(File dir) {
     dir = new File(dir, swapDirName);
     SwapDirectory.directory(dir);
   }
