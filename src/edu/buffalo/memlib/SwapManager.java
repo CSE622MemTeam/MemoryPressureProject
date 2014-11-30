@@ -44,7 +44,6 @@ final class SwapManager {
                 // This should actually never happen...
             } finally {
                 analyze();
-                Log.v("SwapManager", "Analyzing!");
             }
         }
     }
