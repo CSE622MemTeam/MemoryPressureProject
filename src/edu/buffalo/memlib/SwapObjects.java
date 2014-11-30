@@ -1,105 +1,67 @@
-package edu.buffalo.memlib.util;
+package edu.buffalo.memlib;
 
-import java.util.*;
-import java.lang.reflect.Proxy;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
-import edu.buffalo.memlib.swap.*;
+public class SwapObjects<T> implements InvocationHandler {
+    private SwapReference<T> swapReference;
 
-public class SwapObjects<T> implements InvocationHandler{
-	private SwapReference swapReference;
+    /** initialization without object. Don't know any useful case for this
+     * for now. Requires extra function(s) to make this useful 
+     */
+    public SwapObjects() {
+        swapReference = new SwapReference<T>();
+    }
 
-	/** initialization without object. Dont know any useful case for this
-	 * for now. Requires extra function(s) to make this useful 
- 	*/
-	public SwapObjects(){
-		swapReference = new SwapReference();
-	}
+    /** initialization with object. Will initialize SwapReference */
+    public SwapObjects(T object) {
+        swapReference = new SwapReference<T>(object);
+    }
 
-	/** initialization with object. Will initialize SwapReference*/
-        public SwapObjects(T object){
-                swapReference = new SwapReference(object);
-        }
+    /** Create proxy object which proxies Object o which implements Class c */
+    @SuppressWarnings("unchecked")
+    public static <T> T getOne(Class<?> c, T o) {
+        return (T) Proxy.newProxyInstance(SwapObjects.class.getClassLoader(),
+                                          new Class[] {c},
+                                          new SwapObjects<T>(o));
+    }
 
+    // Creating an ArrayList proxy
+    public static <T> List<T> getArrayList(){
+        return (List<T>) getOne(List.class, new ArrayList<T>());
+    }    
 
-	/**
- 		Create proxy object which proxies Object o which implements Class c
-	*/
-	public static Object getOne(Class c, Object o){
-                Object proxy =  Proxy.newProxyInstance(
-                                SwapObjects.class.getClassLoader(),
-                                new Class[] { c },
-                                new SwapObjects(o));
-		SwapObjects sds = new SwapObjects (proxy);
-                return proxy;
-        }
+    // Creating LinkedList proxy
+    public static <T> List<T> getLinkedList(){
+        return (List<T>) getOne(List.class, new LinkedList<T>());
+    }
 
-	//Creating an ArrayList proxy
-	public static <T> List<T> getArrayList(){
-		List proxy = (List) Proxy.newProxyInstance(
-				SwapObjects.class.getClassLoader(),
-				new Class[] { List.class },
-				new SwapObjects(new ArrayList()));
-		SwapObjects sds = new SwapObjects (proxy);
-		return proxy;
-	}	
+    // Creating HashMap proxy
+    public static <K,V> Map<K,V> getHashMap(){
+        return (Map<K,V>) getOne(Map.class, new HashMap<K,V>());
+    }
 
-	//Creating LinkedList proxy
-	public static <T> List<T> getLinkedList(){
-		List proxy = (List) Proxy.newProxyInstance(
-				SwapObjects.class.getClassLoader(),
-				new Class[] { List.class },
-				new SwapObjects(new LinkedList()));
-		SwapObjects sds = new SwapObjects (proxy);
-		return proxy;
-	}
+    // Creating Set proxy
+    public static <T> Set<T> getHashSet(){
+        return (Set<T>) getOne(Set.class, new HashSet<T>());
+    }
 
-	//Creating Hashpmap proxy
-	public static <K,V> Map<K,V> getHashMap(){
-		Map proxy = (Map) Proxy.newProxyInstance(
-				SwapObjects.class.getClassLoader(),
-				new Class[] { Map.class },
-				new SwapObjects(new HashMap()));
-		SwapObjects sds = new SwapObjects (proxy);
-		return proxy;
-	}
-
-	//Creating Set proxy
-	public static <T> Set<T> getHashSet(){
-		Set proxy = (Set) Proxy.newProxyInstance(
-				SwapObjects.class.getClassLoader(),
-				new Class[] { Set.class },
-				new SwapObjects(new HashSet()));
-		SwapObjects sds = new SwapObjects (proxy);
-		return proxy;
-	}
-
-
-
-	/** 
-		Any function call will pass through here and 
-		swapReference will swap in if the object is swapped out 
-	*/	
-	public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-		Object object = swapReference.get();
-		if(object != null)
-			return method.invoke(object, args);
-		return null;
-	}
-
-
-	public static void main(String[] args){
-		
-		Set set = (Set)SwapObjects.getOne(Set.class, new HashSet());
-		if(set == null)throw new NullPointerException();
-		set.add(5);
-		set.add(100);
-		System.out.println(set);
-                
-		List l = (List)SwapObjects.getOne(List.class, new LinkedList());
-		
-		Map<Integer,String> m = (Map)SwapObjects.getOne(Map.class, new HashMap<Integer,String>());
-
-	}
+    /** 
+     * Any function call will pass through here and swapReference will swap in if the 
+     * object is swapped out 
+     */    
+    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+        Object object = swapReference.get();
+        if(object != null)
+            return method.invoke(object, args);
+        return null;
+    }
 }
