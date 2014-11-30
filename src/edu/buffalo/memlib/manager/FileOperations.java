@@ -23,8 +23,10 @@ public final class FileOperations {
 	}
 		
 	/**creates a time-stamped csv file. Call before starting the thread*/
-	public static Boolean createFile()
-	{
+	public static Boolean createFile() {
+		if (file_path != null)
+			return true;
+		
 		SimpleDateFormat fileDate = new SimpleDateFormat("ddMMyyyyhhmmss", Locale.US);
 		
 		String timeStamp = fileDate.format(new Date());

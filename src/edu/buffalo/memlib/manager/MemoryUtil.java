@@ -23,7 +23,7 @@ public final class MemoryUtil {
     static HashMap<Integer, Integer> oom_map = new HashMap<Integer, Integer>();
     
     /**memory states*/
-    static final int MEMORY_OK            = 1;
+    static final int MEMORY_OK       = 1;
     static final int MEMORY_LOW      = 2;
     static final int MEMORY_CRITICAL = 3;
     
@@ -48,7 +48,6 @@ public final class MemoryUtil {
 
     /**Searches for current oom-value and system state*/
     /**We can better predict the chances by monitoring the file pages in the zone than monitoring free*/
-    
     public static void updateMemoryStatus() {
         Iterator<Integer> iterator = oom_score.iterator();
         long expectedFreePages=0;
@@ -63,6 +62,9 @@ public final class MemoryUtil {
                 break;
             }
         }
+        
+        if (oom_map.size() == 0)
+        	buildTable();
         
         expectedFreePages = oom_map.get(key);
                 
@@ -79,6 +81,7 @@ public final class MemoryUtil {
     
     /**update and print values to csv file*/
     public static void dumpString() {
+    	FileOperations.createFile();
         pid = android.os.Process.myPid();        
         vmUsage      = scanProcForField("/proc/"+pid+"/status", "VmRSS:"); 
         memFree      = scanProcForField("/proc/meminfo", "MemFree:");
@@ -98,12 +101,10 @@ public final class MemoryUtil {
             Log.e("cse_622", "Cannot write values to file");
             e.printStackTrace();
         }
-        
     }
     
     /**scan and build the low memory killer parameter table*/
-    public static void buildTable()
-    {
+    public static void buildTable() {
         try {
             scanMemoryKiller("/sys/module/lowmemorykiller/parameters/minfree","/sys/module/lowmemorykiller/parameters/adj");
         } catch (IOException e) {
@@ -116,8 +117,7 @@ public final class MemoryUtil {
             Log.e("cse_622", "Something has wen't wrong. OOM table size's mismatch");
             return;
         }
-        else
-        {
+        else {
             Iterator<Integer> iterator  = free_pages.iterator();
             Iterator<Integer> iterator1 = oom_score.iterator();
             
@@ -127,8 +127,7 @@ public final class MemoryUtil {
                 
                 oom_map.put(key, value);
             }
-        }
-        
+        }  
     }
     
     /** Maximum heap space allowed for this application. */
@@ -153,12 +152,12 @@ public final class MemoryUtil {
 
     /** Total system memory. */
     public static long getTotalMem() {
-        return scanProcForField("/proc/meminfo", "MemTotal");
+        return scanProcForField("/proc/meminfo", "MemTotal:");
     }
 
     /** Available system memory. */
     public static long getFreeMem() {
-        return scanProcForField("/proc/meminfo", "MemFree");
+        return scanProcForField("/proc/meminfo", "MemFree:");
     }
     
     /**
@@ -167,18 +166,7 @@ public final class MemoryUtil {
      * @return true if backgrounded, otherwise false
      */
     public static boolean isBackgrounded() {
-        File file = new File("/proc/" + android.os.Process.myPid() + "/oom_adj");
-        long oom_adj = -1;
-        
-        try {
-            Scanner scanner = new Scanner(file);
-            oom_adj = scanner.nextLong();
-            scanner.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-        
+        int oom_adj = scanProcForFieldInt("/proc/" + android.os.Process.myPid() + "/oom_adj");
         return oom_adj != 0 ? true : false;
     }
 
@@ -209,13 +197,12 @@ public final class MemoryUtil {
         File file = new File(path);
         Scanner scanner = null;
 
-
         try {
             scanner = new Scanner(file);
             while (scanner.hasNextLine()) {
                 String token = scanner.next();
                 if (token.equals(field))
-                    return scanner.nextLong(); 
+                    return scanner.nextLong() << 10; 
                 scanner.nextLine();
             }
         } catch (Exception e) {
