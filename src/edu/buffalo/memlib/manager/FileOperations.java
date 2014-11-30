@@ -47,7 +47,7 @@ public final class FileOperations {
 			}
 		}
 		
-		return true;
+		return writeHeaders();
 	}
 	
 	/**Writes the column headers for the csv file.Call before starting the thread*/
