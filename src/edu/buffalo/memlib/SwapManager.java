@@ -1,6 +1,5 @@
 package edu.buffalo.memlib;
 
-import android.util.Log;
 import edu.buffalo.memlib.manager.MemoryUtil;
 
 /**
