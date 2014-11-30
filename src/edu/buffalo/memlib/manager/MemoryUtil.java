@@ -16,7 +16,6 @@ import android.content.Context;
 import android.util.Log;
 
 public final class MemoryUtil {
-
     static Vector<Integer> free_pages = new Vector<Integer>();
     static Vector<Integer> oom_score  = new Vector<Integer>();
     
@@ -39,11 +38,8 @@ public final class MemoryUtil {
     static int  pid;
     static long cur_memory;
     static long max_memory;
-    
-    
+
     static int warningAt = 1000; /**we can adjust this for early warnings*/
-    
-    
     
     /**interface for receiving the current memory state*/
     public static int getMemoryState() {
@@ -66,7 +62,6 @@ public final class MemoryUtil {
                 key = value;
                 break;
             }
-            
         }
         
         expectedFreePages = oom_map.get(key);
@@ -84,7 +79,6 @@ public final class MemoryUtil {
     
     /**update and print values to csv file*/
     public static void dumpString() {
-        
         pid = android.os.Process.myPid();        
         vmUsage      = scanProcForField("/proc/"+pid+"/status", "VmRSS:"); 
         memFree      = scanProcForField("/proc/meminfo", "MemFree:");
@@ -96,8 +90,7 @@ public final class MemoryUtil {
         cur_memory   = (info.totalMemory() - info.freeMemory());
         
         String dumpData = pid+","+vmUsage + "," + memFree +","+totMem+","+nrFreePages+","+oom_adj+","+cur_memory+","+memory_state+"\n";
-        
-        
+
         try {
             FileOperations.write(dumpData);
         } catch (IOException e) {
@@ -107,7 +100,6 @@ public final class MemoryUtil {
         }
         
     }
-    
     
     /**scan and build the low memory killer parameter table*/
     public static void buildTable()
@@ -156,7 +148,7 @@ public final class MemoryUtil {
     
     /** Current heap used as percent of the maximum heap space allowed for this application. */
     public static double heapUsage() {
-        return getMaxHeap() / getUsedHeap();
+        return ((double) getUsedHeap()) / ((double) getMaxHeap());
     }
 
     /** Total system memory. */
@@ -168,7 +160,6 @@ public final class MemoryUtil {
     public static long getFreeMem() {
         return scanProcForField("/proc/meminfo", "MemFree");
     }
-    
     
     /**
      * Check if the application is backgrounded.
@@ -253,8 +244,6 @@ public final class MemoryUtil {
         }
         return -1;
     }
-
-
 
     private static void scanMemoryKiller(String path_free_pages, String path_score) throws IOException {
         FileReader input  = new FileReader(path_free_pages);
