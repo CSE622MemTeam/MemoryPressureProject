@@ -64,7 +64,7 @@ public final class MemoryUtil {
         }
         
         if (oom_map.size() == 0)
-        	buildTable();
+            buildTable();
         
         expectedFreePages = oom_map.get(key);
                 
@@ -81,7 +81,7 @@ public final class MemoryUtil {
     
     /**update and print values to csv file*/
     public static void dumpString() {
-    	FileOperations.createFile();
+        FileOperations.createFile();
         pid = android.os.Process.myPid();        
         vmUsage      = scanProcForField("/proc/"+pid+"/status", "VmRSS:"); 
         memFree      = scanProcForField("/proc/meminfo", "MemFree:");
