@@ -16,16 +16,16 @@ public class MainActivity extends Activity {
         Button classic = (Button) findViewById(R.id.button1);
         classic.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
-            	Intent intent = new Intent(MainActivity.this, ClassicTesterActivity.class);
-            	startActivity(intent);
+                Intent intent = new Intent(MainActivity.this, ClassicTesterActivity.class);
+                startActivity(intent);
             }
         });
         
         Button debug = (Button)findViewById(R.id.button2);
         debug.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-            	Intent intent = new Intent(MainActivity.this, DebugActivity.class);
-            	startActivity(intent);
+                Intent intent = new Intent(MainActivity.this, DebugActivity.class);
+                startActivity(intent);
             }
         });
     }
