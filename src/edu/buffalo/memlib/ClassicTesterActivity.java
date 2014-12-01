@@ -21,6 +21,16 @@ public class ClassicTesterActivity extends Activity {
     List<byte[]> list = SwapObjects.getArrayList();
     TextView VmUsage;
     
+    protected void onStart() {
+    	super.onStart();
+    	updateUsage();
+    }
+    
+    protected void onResume() {
+    	super.onResume();
+    	updateUsage();
+    }
+    
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         
