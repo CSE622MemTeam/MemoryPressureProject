@@ -58,7 +58,6 @@ final class SwapManager {
     private static synchronized boolean shouldSwap() {
         double trigger = MemoryUtil.isBackgrounded() ?
             policy.bgHeapMaxUsage : policy.fgHeapMaxUsage;
-        System.out.println("Trigger: "+(MemoryUtil.heapUsage() > trigger));
         return MemoryUtil.heapUsage() > trigger;
     }
 
@@ -78,7 +77,6 @@ final class SwapManager {
             if (!SwapReference.swapOutLeastUsed())
                 return;
             System.gc();
-            System.out.println("Swapped something out! "+MemoryUtil.heapUsage());
         }
     }
 
