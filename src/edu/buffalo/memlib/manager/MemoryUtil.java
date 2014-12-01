@@ -192,6 +192,17 @@ public final class MemoryUtil {
         activityManager.getMemoryInfo(memoryInfo);
         return memoryInfo.threshold;
     }
+    
+    /** Pretty version of bytes used for printing. */
+    public static String bytesToString(long bytes) {
+        if (bytes < 1024)
+            return bytes+"B";
+        if ((bytes>>10) < 1024)
+            return (bytes>>10)+"KB";
+        if ((bytes>>20) < 1024)
+            return (bytes>>20)+"MB";
+        return (bytes>>30)+"GB";
+    }
 
     private static long scanProcForField(String path, String field) {
         File file = new File(path);

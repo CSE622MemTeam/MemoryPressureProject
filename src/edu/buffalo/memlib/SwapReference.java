@@ -1,6 +1,6 @@
 package edu.buffalo.memlib;
 
-import java.io.*;
+import java.io.IOException;
 
 /** A swappable reference to an object. */
 public class SwapReference<T> {
@@ -29,7 +29,8 @@ public class SwapReference<T> {
   /**
    * Get the referent. If it is swapped out, it will be swapped in.
    */
-  public synchronized T get() {
+  @SuppressWarnings("unchecked")
+public synchronized T get() {
     swapIn();  // Always updates position in LRU list.
     return (T) object;
   }
@@ -67,7 +68,8 @@ public class SwapReference<T> {
   }
 
   /** Swap the referent out. No effect if already swapped out. */
-  public synchronized void swapOut() {
+  @SuppressWarnings("unchecked")
+public synchronized void swapOut() {
     if (object != null && !isSwappedOut()) try {
       object = (T) Swap.swapOut(object);
       updateAccessList();
@@ -88,7 +90,8 @@ public class SwapReference<T> {
    * Returns the swap token if we're swapped out. It is an error to call this
    * if the referent is not swapped out.
    */
-  private Swap.Token<T> token() {
+  @SuppressWarnings("unchecked")
+private Swap.Token<T> token() {
     return (Swap.Token<T>) object;
   }
 
