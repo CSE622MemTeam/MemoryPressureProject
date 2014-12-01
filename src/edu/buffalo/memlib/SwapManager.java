@@ -75,9 +75,9 @@ final class SwapManager {
         while (MemoryUtil.heapUsage() > target) {
             // Swap out, and stop if there's nothing left to swap.
             if (!SwapReference.swapOutLeastUsed())
-                return;
-            System.gc();
+                break;
         }
+        System.gc();
     }
 
     private SwapManager() { /* Don't make me. */ }
