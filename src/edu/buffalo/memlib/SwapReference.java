@@ -21,12 +21,8 @@ public class SwapReference<T> {
 
     /** Create a SwapReference referring to the given object. */
     public SwapReference(T object) {
-        synchronized (SwapManager.class) {
-            this.object = object;
-            SwapManager.initialize();
-            SwapManager.analyzeAndCollect();
-            updateAccessList();
-        }
+        SwapManager.initialize();
+        synchronized (SwapManager.class) { set(object); }
     }
 
     /**
@@ -34,9 +30,12 @@ public class SwapReference<T> {
      */
     @SuppressWarnings("unchecked")
     public synchronized T get() {
-        SwapManager.analyzeAndCollect();
-        swapIn();  // Always updates position in LRU list.
-        return (T) object;
+        if (isSwappedOut()) {
+            swapIn();
+            SwapManager.analyzeAndCollect();
+        } else {
+            updateAccessList();
+        } return (T) object;
     }
 
     /**
@@ -57,7 +56,6 @@ public class SwapReference<T> {
 
     /** Bring the referent in from swap. No effect if already swapped in. */
     public synchronized void swapIn() {
-        // Do this even if swapped in to help get().
         updateAccessList();
 
         if (isSwappedOut()) try {

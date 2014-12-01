@@ -11,37 +11,65 @@ import android.widget.Button;
 public class PerfTestActivity extends Activity {
     static {
         SwapLib.setPolicy(new Policy() {{
-            fgHeapOptUsage = 0.5;
-            fgHeapMaxUsage = 0.5;
-            bgHeapOptUsage = 0.5;
-            bgHeapMaxUsage = 0.5;
+            fgHeapOptUsage = 0.6;
+            fgHeapMaxUsage = 0.7;
         }});
     }
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Set<SwapReference> set = new HashSet<SwapReference>();
-
-        // Fill with 35MB of stuff.
-        for (int i = 0; i < 35; i++) {
-            System.out.println("Creating 1MB... "+i);
-            set.add(new SwapReference(new byte[1<<20]));
-        }
-        System.out.println("Done creating!");
-
-        // Iterate over set.
-        double total = 0;
-        for (SwapReference r : set) {
-            double time = System.nanoTime();
-            System.out.println("Getting 1MB...");
-            System.out.println("Swapped: "+r.isSwappedOut());
-            r.get();
-            time = (System.nanoTime() - time)/1000/1000;
-            System.out.println("get() time: "+time);
-            total += time;
-        }
-
-        System.out.println("total time: "+total);
+        // Only run test if this is the first time starting the view.
+        if (savedInstanceState == null)
+            new Thread(test).start();
     }
+
+    private static double time() {
+        return System.nanoTime()/1E6;
+    }
+
+    /** Used to ensure random ordering in hash set. */
+    private static class Holder extends SwapReference<Object> {
+        static Random rand = new Random();
+        int hash = rand.nextInt();
+
+        public Holder(Object o) { super(o); }
+
+        public int hashCode() { return hash; }
+    }
+
+    // The actual test. Will be run on a separate thread.
+    private Runnable test = new Runnable() {
+        public void run() {
+            Set<Holder> set = new HashSet<Holder>();
+            double total;
+            int mb = 35;
+
+            System.out.println("Generating test objects...");
+            total = 0;
+            for (int i = 1; i <= mb*10; i++) {
+                double time = time();
+                System.out.println("Creating 100KB... "+i);
+                set.add(new Holder(new byte[100<<10]));
+                time = time()-time;
+                System.out.println("   time: "+time+"ms");
+                total += time;
+            }
+            System.out.println("Done creating! total = "+total);
+
+            System.out.println("Starting iteration...");
+            total = 0;
+            int i = 1;
+            for (Holder r : set) {
+                double time = time();
+                System.out.println("Getting 100KB... "+i++);
+                System.out.println("   Swapped? "+r.isSwappedOut());
+                r.get();
+                time = time()-time;
+                System.out.println("   time: "+time+"ms");
+                total += time;
+            }
+            System.out.println("Done iterating! total = "+total);
+        }
+    };
 }

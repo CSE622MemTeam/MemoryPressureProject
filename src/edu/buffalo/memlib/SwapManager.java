@@ -37,7 +37,7 @@ final class SwapManager {
     private static void monitor() {
         while (true) try {
             Thread.sleep(policy.heapAnalysisInterval);
-            analyzeAndCollect();
+            innerAnalyzeAndCollect();
         } catch (InterruptedException ie) {
             // If we're interrupted, don't collect, just reset.
         }
@@ -45,13 +45,15 @@ final class SwapManager {
 
     /** Force heap analysis. */
     public static synchronized void analyzeAndCollect() {
+        innerAnalyzeAndCollect();
+        daemon.interrupt();
+    }
+
+    private static synchronized void innerAnalyzeAndCollect() {
         if (shouldSwap())
-            System.gc();
+            System.gc();  // Make sure...
         if (shouldSwap())
             swapUntilOptimum();
-
-        // Interrupt the daemon to reset its timer.
-        daemon.interrupt();
     }
 
     /** Determine if we should swap. */
@@ -76,8 +78,8 @@ final class SwapManager {
             // Swap out, and stop if there's nothing left to swap.
             if (!SwapReference.swapOutLeastUsed())
                 break;
+            System.gc();
         }
-        System.gc();
     }
 
     private SwapManager() { /* Don't make me. */ }
