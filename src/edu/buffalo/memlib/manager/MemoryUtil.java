@@ -77,6 +77,8 @@ public final class MemoryUtil {
         else {
             memory_state = MEMORY_OK;
         }
+        
+        dumpString();
     }
     
     /**update and print values to csv file*/

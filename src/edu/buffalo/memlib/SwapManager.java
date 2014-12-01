@@ -39,6 +39,10 @@ final class SwapManager {
         while (true) synchronized (daemon) {
             try {
                 daemon.wait(policy.heapAnalysisInterval);
+                
+                /**Capture system status*/
+                MemoryUtil.updateMemoryStatus();
+                
             } catch (InterruptedException ie) {
                 // This should actually never happen...
             } finally {
