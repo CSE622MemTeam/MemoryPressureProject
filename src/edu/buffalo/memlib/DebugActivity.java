@@ -28,7 +28,7 @@ public class DebugActivity extends Activity {
         testSwapObjects();
         
         try {
-        	Process process = Runtime.getRuntime().exec("logcat -t 20 Test:V dalvikvm:S libEGL:S OpenGLRenderer:S");
+        	Process process = Runtime.getRuntime().exec("logcat -t 25 Test:V dalvikvm:S libEGL:S OpenGLRenderer:S");
         	BufferedReader bufferedReader = new BufferedReader(
         			new InputStreamReader(process.getInputStream()));
 
