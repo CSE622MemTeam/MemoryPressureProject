@@ -34,7 +34,7 @@ public class SwapReference<T> {
      */
     @SuppressWarnings("unchecked")
     public synchronized T get() {
-        SwapManager.force();
+        SwapManager.analyzeAndCollect();
         swapIn();  // Always updates position in LRU list.
         return (T) object;
     }
