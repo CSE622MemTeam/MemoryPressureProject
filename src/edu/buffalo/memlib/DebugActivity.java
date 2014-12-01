@@ -11,6 +11,7 @@ import java.util.Set;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.widget.TextView;
 import edu.buffalo.memlib.manager.FileOperations;
@@ -38,6 +39,7 @@ public class DebugActivity extends Activity {
                 log.append(line + "\n");
             }   
             TextView tv = (TextView)findViewById(R.id.textView1);
+            tv.setMovementMethod(new ScrollingMovementMethod());
             tv.setText("");
             tv.setText(log.toString());
         } catch (IOException e) {
