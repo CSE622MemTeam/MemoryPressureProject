@@ -37,12 +37,13 @@ final class Swap {
 
     /** Configure the location for the swap directory. */
     static synchronized void setRoot(String path) {
-        setRoot(new File(path));
+        setRoot((path == null) ? null : new File(path));
     }
 
     /** Configure the location for the swap directory. */
     static synchronized void setRoot(File dir) {
-        dir = new File(dir, swapDirName);
+        if (dir != null)
+            dir = new File(dir, swapDirName);
         SwapDirectory.directory(dir);
     }
 
