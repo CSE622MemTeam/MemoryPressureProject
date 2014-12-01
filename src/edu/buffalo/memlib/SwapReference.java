@@ -73,7 +73,6 @@ public class SwapReference<T> {
         if (object != null && !isSwappedOut()) try {
             object = (T) Swap.swapOut(object);
             updateAccessList();
-
             System.gc();
         } catch (IOException e) {
             // Couldn't swap object. Let's treat this like an OOM error for now.

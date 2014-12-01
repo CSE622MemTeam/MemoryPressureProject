@@ -43,6 +43,7 @@ final class SwapManager {
                 // This should actually never happen...
             } finally {
                 analyze();
+                System.gc();
             }
         }
     }
