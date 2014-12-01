@@ -78,7 +78,6 @@ final class SwapManager {
             // Swap out, and stop if there's nothing left to swap.
             if (!SwapReference.swapOutLeastUsed())
                 break;
-            System.gc();
         }
     }
 
