@@ -21,9 +21,12 @@ public class SwapReference<T> {
 
     /** Create a SwapReference referring to the given object. */
     public SwapReference(T object) {
-        this.object = object;
-        SwapManager.initialize();
-        updateAccessList();
+        synchronized (SwapManager.class) {
+            this.object = object;
+            SwapManager.initialize();
+            SwapManager.analyzeAndCollect();
+            updateAccessList();
+        }
     }
 
     /**
@@ -47,6 +50,7 @@ public class SwapReference<T> {
         }
 
         this.object = object;
+        SwapManager.analyzeAndCollect();
         updateAccessList();
     }
 
@@ -73,7 +77,6 @@ public class SwapReference<T> {
         if (object != null && !isSwappedOut()) try {
             object = (T) Swap.swapOut(object);
             updateAccessList();
-            System.gc();
         } catch (IOException e) {
             // Couldn't swap object. Let's treat this like an OOM error for now.
             // Really we should throw some checked exception to force the caller to

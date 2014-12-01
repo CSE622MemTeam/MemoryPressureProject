@@ -28,5 +28,13 @@ public class MainActivity extends Activity {
                 startActivity(intent);
             }
         });
+
+        Button perfTest = (Button)findViewById(R.id.button3);
+        perfTest.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, PerfTestActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 }

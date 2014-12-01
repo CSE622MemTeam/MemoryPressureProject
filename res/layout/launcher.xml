@@ -17,5 +17,11 @@
     android:layout_height="wrap_content"
     android:text="Developer Debug Activity" />
 
+<Button
+    android:id="@+id/button3"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:text="Performance Test" />
+
 </LinearLayout>
 

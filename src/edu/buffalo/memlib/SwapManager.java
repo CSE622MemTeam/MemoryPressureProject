@@ -27,7 +27,6 @@ final class SwapManager {
         if (!initialized) try {
             daemon.setDaemon(true);
             daemon.start();
-            
             initialized = true;
         } catch (Exception e) {
             // Must have already started...
@@ -36,50 +35,51 @@ final class SwapManager {
 
     /** The monitoring code. Will be run in a separate thread. */
     private static void monitor() {
-        while (true) synchronized (daemon) {
-            try {
-                daemon.wait(policy.heapAnalysisInterval);
-                
-                /**Capture system status*/
-                MemoryUtil.updateMemoryStatus();
-                
-            } catch (InterruptedException ie) {
-                // This should actually never happen...
-            } finally {
-                analyze();
-                System.gc();
-            }
+        while (true) try {
+            Thread.sleep(policy.heapAnalysisInterval);
+            analyzeAndCollect();
+        } catch (InterruptedException ie) {
+            // If we're interrupted, don't collect, just reset.
         }
     }
 
-    /** Force early heap analysis. */
-    public static void force() {
-        synchronized (daemon) {
-            daemon.notifyAll();
-        };
+    /** Force heap analysis. */
+    public static synchronized void analyzeAndCollect() {
+        if (shouldSwap())
+            System.gc();
+        if (shouldSwap())
+            swapUntilOptimum();
+
+        // Interrupt the daemon to reset its timer.
+        daemon.interrupt();
     }
 
-    /** Analyze memory usage and swap if necessary. */
-    private static void analyze() {
-        double target  = policy.fgHeapOptUsage;
-        double trigger = policy.fgHeapMaxUsage;
+    /** Determine if we should swap. */
+    private static synchronized boolean shouldSwap() {
+        double trigger = MemoryUtil.isBackgrounded() ?
+            policy.bgHeapMaxUsage : policy.fgHeapMaxUsage;
+        System.out.println("Trigger: "+(MemoryUtil.heapUsage() > trigger));
+        return MemoryUtil.heapUsage() > trigger;
+    }
 
-        if (MemoryUtil.isBackgrounded()) {
-            target  = policy.bgHeapOptUsage;
-            trigger = policy.bgHeapMaxUsage;
-        }
-
-        if (MemoryUtil.heapUsage() > trigger)
-            swapUntil(target);
+    /** Swap until we've reached optimal heap utilization. */
+    private static synchronized void swapUntilOptimum() {
+        double target = MemoryUtil.isBackgrounded() ?
+            policy.bgHeapOptUsage : policy.fgHeapOptUsage;
+        swapUntil(target);
     }
 
     /**
      * Swap until target utilization is reached (or there is nothing to swap).
      */
-    private static void swapUntil(double target) {
-        while (MemoryUtil.heapUsage() > target &&
-               SwapReference.swapOutLeastUsed())
-            Thread.yield();  // Precaution - don't overutilize CPU.
+    private static synchronized void swapUntil(double target) {
+        while (MemoryUtil.heapUsage() > target) {
+            // Swap out, and stop if there's nothing left to swap.
+            if (!SwapReference.swapOutLeastUsed())
+                return;
+            System.gc();
+            System.out.println("Swapped something out! "+MemoryUtil.heapUsage());
+        }
     }
 
     private SwapManager() { /* Don't make me. */ }
