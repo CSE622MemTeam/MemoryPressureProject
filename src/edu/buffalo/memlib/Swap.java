@@ -73,6 +73,7 @@ final class Swap {
 final class SwapDirectory {
     /** The current swap location. Lazily initialized. */
     private static File directory;  // XXX: Use carefully.
+    private static File defaultSwapDirectory = null;
 
     /** Open a new swap file for token. */
     static <T> SwapFile<T> open(Swap.Token<T> token, boolean create) throws IOException {
@@ -112,10 +113,14 @@ final class SwapDirectory {
     // directory, finding a suitable location in internal or external storage,
     // or some other method.  For now, just create and return a new temp
     // directory.
+    	if (defaultSwapDirectory != null)
+    		return defaultSwapDirectory;
+    	
         try {
             File tmp = File.createTempFile(Swap.swapDirName, null);
             tmp.delete();
             tmp.mkdirs();  // FIXME: Possible race condition...
+            defaultSwapDirectory = tmp;
             return tmp;
         } catch (Exception e) {
             throw new RuntimeException(e);
