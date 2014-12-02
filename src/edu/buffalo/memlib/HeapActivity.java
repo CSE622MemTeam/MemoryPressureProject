@@ -84,7 +84,7 @@ public class HeapActivity extends Activity {
         updateUsage();
     }
     
-    /** Will allocate bytes MB memory. */
+    /** Will allocate memory in MB in chunks of a given granularity. */
     private void allocateMemory(int mb, int granularity) {
         int bytes = granularity << 20;
         
