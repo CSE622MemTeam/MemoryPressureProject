@@ -5,17 +5,54 @@ import java.util.Random;
 import java.util.Set;
 
 import android.app.Activity;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.widget.LinearLayout;
+
+import com.jjoe64.graphview.BarGraphView;
+import com.jjoe64.graphview.GraphView;
+import com.jjoe64.graphview.GraphView.GraphViewData;
+import com.jjoe64.graphview.GraphViewDataInterface;
+import com.jjoe64.graphview.GraphViewSeries;
+import com.jjoe64.graphview.GraphViewSeries.GraphViewSeriesStyle;
+import com.jjoe64.graphview.ValueDependentColor;
+
 import edu.buffalo.memlib.manager.MemoryUtil;
 
 public class PerfTestActivity extends Activity {
+	private static GraphView graphView;
+	private static GraphViewSeries heapSeries;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.perf);
 
         // Only run test if this is the first time starting the view.
         if (savedInstanceState == null)
             new Thread(test).start();
+        
+        graphView = new BarGraphView(this , "Heap per Total Allocated");
+        LinearLayout layout = (LinearLayout) findViewById(R.id.graph1);
+        layout.addView(graphView);
+//        graphView.addSeries(heapSeries);
+        
+        GraphViewSeriesStyle seriesStyle = new GraphViewSeriesStyle();
+        seriesStyle.setValueDependentColor(new ValueDependentColor() {
+          @Override
+          public int get(GraphViewDataInterface data) {
+            // the higher the more red
+            return Color.rgb((int)(150+((data.getY()/3)*100)), (int)(150-((data.getY()/3)*150)), (int)(150-((data.getY()/3)*150)));
+          }
+        });
+        heapSeries = new GraphViewSeries("aaa", seriesStyle, new GraphViewData[] {
+            new GraphViewData(1, 2.0d), 
+            new GraphViewData(2, 1.5d), 
+            new GraphViewData(2.5, 3.0d), // another frequency, 
+            new GraphViewData(3, 2.5d), 
+            new GraphViewData(4, 1.0d), 
+            new GraphViewData(5, 3.0d)
+        });
+        graphView.addSeries(heapSeries);
     }
 
     private static double time() {
