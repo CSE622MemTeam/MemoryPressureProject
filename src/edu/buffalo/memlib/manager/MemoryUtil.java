@@ -22,13 +22,6 @@ public final class MemoryUtil {
     @SuppressLint("UseSparseArrays")
     static HashMap<Integer, Integer> oom_map = new HashMap<Integer, Integer>();
     
-    /**memory states*/
-    static final int MEMORY_OK       = 1;
-    static final int MEMORY_LOW      = 2;
-    static final int MEMORY_CRITICAL = 3;
-    
-    public static int memory_state = MEMORY_OK;
-    
     /**Parameters written to csv file*/
     static long vmUsage;
     static long memFree;
@@ -41,9 +34,17 @@ public final class MemoryUtil {
 
     static int warningAt = 1000; /**we can adjust this for early warnings*/
     
+    /**memory states*/
+    public static final int MEMORY_OK       = 1;
+    public static final int MEMORY_LOW      = 2;
+    public static final int MEMORY_CRITICAL = 3;
+  
+    public static int memory_state = MEMORY_OK;
+    
     /**interface for receiving the current memory state*/
     public static int getMemoryState() {
-        return memory_state;
+    	updateMemoryStatus();
+    	return memory_state;
     }
 
     /**Searches for current oom-value and system state*/
@@ -85,10 +86,10 @@ public final class MemoryUtil {
     public static void dumpString() {
         FileOperations.createFile();
         pid = android.os.Process.myPid();        
-        vmUsage      = scanProcForField("/proc/"+pid+"/status", "VmRSS:"); 
-        memFree      = scanProcForField("/proc/meminfo", "MemFree:");
-        totMem       = scanProcForField("/proc/meminfo", "MemTotal:");
-        nrFreePages  = scanProcForField("/proc/zoneinfo", "nr_file_pages");
+        vmUsage      = scanForField("/proc/"+pid+"/status", "VmRSS:"); 
+        memFree      = scanForField("/proc/meminfo", "MemFree:");
+        totMem       = scanForField("/proc/meminfo", "MemTotal:");
+        nrFreePages  = scanForField("/proc/zoneinfo", "nr_file_pages");
         oom_adj      = scanProcForFieldInt("/proc/"+pid+"/oom_adj");
         Runtime info = Runtime.getRuntime(); 
         max_memory   = info.maxMemory();
@@ -205,7 +206,32 @@ public final class MemoryUtil {
             return (bytes>>20)+"MB";
         return (bytes>>30)+"GB";
     }
+    
+    
 
+    private static long scanForField(String path, String field) {
+        File file = new File(path);
+        Scanner scanner = null;
+
+
+        try {
+                scanner = new Scanner(file);
+                while (scanner.hasNextLine()) {
+                        String token = scanner.next();
+                        if (token.equals(field))
+                                return scanner.nextLong(); 
+                        String s = scanner.nextLine();
+                }
+        } catch (Exception e) {
+                Log.e("MemUtil", "Error scanning " + file + " for " + field, e);
+        } finally {
+                if (scanner != null)
+                        scanner.close();
+        }
+        return -1;
+   }
+
+    
     private static long scanProcForField(String path, String field) {
         File file = new File(path);
         Scanner scanner = null;

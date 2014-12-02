@@ -9,4 +9,6 @@
     <string name="Push">push</string>
     <string name="pop">Pop</string>
     <string name="pushh">Push</string>
+    <string name="Update">update</string>
+    <string name="update">Update</string>
 </resources>

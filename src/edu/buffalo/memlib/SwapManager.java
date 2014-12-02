@@ -60,6 +60,13 @@ final class SwapManager {
     private static synchronized boolean shouldSwap() {
         double trigger = MemoryUtil.isBackgrounded() ?
             policy.bgHeapMaxUsage : policy.fgHeapMaxUsage;
+        
+    /**Changes for system level low mem handling*/    
+        if(MemoryUtil.getMemoryState()== MemoryUtil.MEMORY_CRITICAL)
+        {
+        	trigger = 0;
+        }
+    /**Changes for system level low mem handling*/    
         return MemoryUtil.heapUsage() > trigger;
     }
 
@@ -67,6 +74,14 @@ final class SwapManager {
     private static synchronized void swapUntilOptimum() {
         double target = MemoryUtil.isBackgrounded() ?
             policy.bgHeapOptUsage : policy.fgHeapOptUsage;
+        
+        /**Changes for system level low mem handling*/
+        if(MemoryUtil.getMemoryState()== MemoryUtil.MEMORY_CRITICAL)
+        {
+        	target =0;
+        }
+        /**Changes for system level low mem handling*/
+        
         swapUntil(target);
     }
 

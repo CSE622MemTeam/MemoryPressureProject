@@ -37,13 +37,13 @@ public class ClassicTesterActivity extends Activity {
         setContentView(R.layout.activity_main);
         
         TextView title   = (TextView)findViewById(R.id.title);
-        TextView summary = (TextView)findViewById(R.id.summary);
+       ;
         VmUsage = (TextView)findViewById(R.id.VMUsage);
         
         SimpleDateFormat simpleDate =new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.US);
         
         title.setText(R.string.AppInfo);
-        summary.setText(R.string.AppTitle);
+      
         
         if (!Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
             Toast.makeText(this, "External SD card not mounted", Toast.LENGTH_LONG).show();
@@ -94,6 +94,16 @@ public class ClassicTesterActivity extends Activity {
             @Override
             public void onClick(View v) {
                 SwapReference.swapOutLeastUsed();
+                updateUsage();
+            }
+        });
+        
+        
+        Button updateButton = (Button)findViewById(R.id.button3);
+        updateButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+     
                 updateUsage();
             }
         });
