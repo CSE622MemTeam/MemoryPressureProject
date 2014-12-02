@@ -18,31 +18,31 @@ import com.jjoe64.graphview.LineGraphView;
 import edu.buffalo.memlib.manager.MemoryUtil;
 
 public class HeapActivity extends Activity {
-	private static ArrayList<Collection<byte[]>> swappable = new ArrayList<Collection<byte[]>>();
-	private TextView usage;
-	private TextView allocated;
-	private TextView arraylist;
-	private TextView linkedlist;
-	private TextView hashet;
-	GraphView graphView;
-	GraphViewSeries heapSeries = new GraphViewSeries(new GraphViewData[] {new GraphViewData(0, 0)});
-	private static long total = MemoryUtil.getUsedHeap() >> 20;
-	private static int alist = 0;
-	private static int llist = 0;
-	private static int hset = 0;
-	private static int mode = 0;
-	
-	protected void onStart() {
-		super.onStart();
-		updateUsage();
-	}
-	
-	protected void onResume() {
-		super.onResume();
-		updateUsage();
-	}
+    private static ArrayList<Collection<byte[]>> swappable = new ArrayList<Collection<byte[]>>();
+    private TextView usage;
+    private TextView allocated;
+    private TextView arraylist;
+    private TextView linkedlist;
+    private TextView hashet;
+    GraphView graphView;
+    GraphViewSeries heapSeries = new GraphViewSeries(new GraphViewData[] {new GraphViewData(0, 0)});
+    private static long total = MemoryUtil.getUsedHeap() >> 20;
+    private static int alist = 0;
+    private static int llist = 0;
+    private static int hset = 0;
+    private static int mode = 0;
+    
+    protected void onStart() {
+        super.onStart();
+        updateUsage();
+    }
+    
+    protected void onResume() {
+        super.onResume();
+        updateUsage();
+    }
 
-	protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.heaper);
         
@@ -82,34 +82,34 @@ public class HeapActivity extends Activity {
         });
 
         updateUsage();
-	}
-	
-	/** Will allocate bytes MB memory. */
+    }
+    
+    /** Will allocate bytes MB memory. */
     private void allocateMemory(int mb, int granularity) {
-    	int bytes = granularity << 20;
-    	
-    	for(int i = granularity; i <= mb; i += granularity) {
-    		Collection<byte[]> collection;
-    		
-    		if (mode % 3 == 0) {
-    			collection = SwapObjects.getArrayList();
-    			alist += 1;
-    		}
-    		else if (mode % 3 == 1) {
-    			collection = SwapObjects.getHashSet();
-    			hset += 1;
-    		}
-    		else {
-    			collection = SwapObjects.getLinkedList();
-    			llist += 1;
-    		}
-    		
-    		collection.add(new byte[bytes]);
-    		swappable.add(collection);
-    		mode += 1;
-    	}
-    	
-    	total += mb;
+        int bytes = granularity << 20;
+        
+        for(int i = granularity; i <= mb; i += granularity) {
+            Collection<byte[]> collection;
+            
+            if (mode % 3 == 0) {
+                collection = SwapObjects.getArrayList();
+                alist += 1;
+            }
+            else if (mode % 3 == 1) {
+                collection = SwapObjects.getHashSet();
+                hset += 1;
+            }
+            else {
+                collection = SwapObjects.getLinkedList();
+                llist += 1;
+            }
+            
+            collection.add(new byte[bytes]);
+            swappable.add(collection);
+            mode += 1;
+        }
+        
+        total += mb;
     }
     
     private void updateUsage() {
