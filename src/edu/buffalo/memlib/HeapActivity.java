@@ -24,8 +24,8 @@ public class HeapActivity extends Activity {
     private TextView arraylist;
     private TextView linkedlist;
     private TextView hashet;
-    GraphView graphView;
-    GraphViewSeries heapSeries = new GraphViewSeries(new GraphViewData[] {new GraphViewData(0, 0)});
+    private static GraphView graphView;
+    private static GraphViewSeries heapSeries = new GraphViewSeries(new GraphViewData[] {new GraphViewData(0, 0)});
     private static long total = MemoryUtil.getUsedHeap() >> 20;
     private static int alist = 0;
     private static int llist = 0;
