@@ -7,7 +7,14 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import com.jjoe64.graphview.GraphView;
+import com.jjoe64.graphview.GraphView.GraphViewData;
+import com.jjoe64.graphview.GraphViewSeries;
+import com.jjoe64.graphview.LineGraphView;
+
 import edu.buffalo.memlib.manager.MemoryUtil;
 
 public class HeapActivity extends Activity {
@@ -17,6 +24,8 @@ public class HeapActivity extends Activity {
 	private TextView arraylist;
 	private TextView linkedlist;
 	private TextView hashet;
+	GraphView graphView;
+	GraphViewSeries heapSeries = new GraphViewSeries(new GraphViewData[] {new GraphViewData(0, 0)});
 	private static long total = MemoryUtil.getUsedHeap() >> 20;
 	private static int alist = 0;
 	private static int llist = 0;
@@ -42,6 +51,11 @@ public class HeapActivity extends Activity {
         arraylist = (TextView)findViewById(R.id.textView3);
         linkedlist = (TextView)findViewById(R.id.textView4);
         hashet = (TextView)findViewById(R.id.textView5);
+        
+        graphView = new LineGraphView(this , "Heap per Total Allocated");
+        LinearLayout layout = (LinearLayout) findViewById(R.id.graph1);
+        layout.addView(graphView);
+        graphView.addSeries(heapSeries);
          
         Button tenButton = (Button)findViewById(R.id.button1);
         tenButton.setOnClickListener(new View.OnClickListener() {
@@ -103,10 +117,11 @@ public class HeapActivity extends Activity {
                       MemoryUtil.bytesToString(MemoryUtil.getUsedHeap()) +
                       " / " + 
                       MemoryUtil.bytesToString(MemoryUtil.getMaxHeap()));
-        allocated.setText("Total Allocated: " + total);
+        allocated.setText("Total Allocated: " + total + "MB");
         arraylist.setText("ArrayLists: " + alist);
         linkedlist.setText("LinkedLists: " + llist);
         hashet.setText("HashSets: " + hset);
-        
+        heapSeries.appendData(new GraphViewData(mode, MemoryUtil.getUsedHeap() >> 20), false, 10);
+        graphView.addSeries(heapSeries);
     }
 }
