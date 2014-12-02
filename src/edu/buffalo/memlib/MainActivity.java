@@ -36,5 +36,13 @@ public class MainActivity extends Activity {
                 startActivity(intent);
             }
         });
+
+        Button heapTest = (Button)findViewById(R.id.button4);
+        heapTest.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, HeapActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 }

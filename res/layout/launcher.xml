@@ -23,5 +23,11 @@
     android:layout_height="wrap_content"
     android:text="Performance Test" />
 
+<Button
+    android:id="@+id/button4"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:text="Heap Test" />
+
 </LinearLayout>
 
