@@ -24,9 +24,10 @@ public class SwapReference<T> {
         SwapManager.initialize();
         synchronized (SwapManager.class) { set(object); }
     }
-    
+
+    /** Clear the value held by this SwapReference. */
     public void clear() {
-    	set(null);
+        set(null);
     }
 
     /**
