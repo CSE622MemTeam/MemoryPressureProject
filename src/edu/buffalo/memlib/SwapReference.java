@@ -56,10 +56,9 @@ public class SwapReference<T> {
 
     /** Bring the referent in from swap. No effect if already swapped in. */
     public synchronized void swapIn() {
-        updateAccessList();
-
         if (isSwappedOut()) try {
             object = Swap.swapIn(token());
+            updateAccessList();
         } catch (IOException e) {
             // Couldn't recover object. Let's treat this like an OOM error.
             throw new OutOfMemoryError("Swapping in");

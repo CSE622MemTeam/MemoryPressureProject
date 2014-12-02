@@ -43,7 +43,7 @@ public class PerfTestActivity extends Activity {
         public void run() {
             Set<Holder> set = new HashSet<Holder>();
             double total;
-            int mb = 35;
+            int mb = 350;
 
             System.out.println("Generating test objects...");
             total = 0;
