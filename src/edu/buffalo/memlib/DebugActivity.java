@@ -29,7 +29,9 @@ public class DebugActivity extends Activity {
         testSwapObjects();
         
         try {
-            Process process = Runtime.getRuntime().exec("logcat -t 25 Test:V dalvikvm:S libEGL:S OpenGLRenderer:S");
+            Process process = Runtime.getRuntime().exec("logcat -t 25 Test:V dalvikvm:S libEGL:S " + 
+                                                        "OpenGLRenderer:S dalvikvm-heap:S " + 
+            		                                    "HardwareRenderer:S");
             BufferedReader bufferedReader = new BufferedReader(
                     new InputStreamReader(process.getInputStream()));
 
@@ -82,7 +84,7 @@ public class DebugActivity extends Activity {
         MemoryUtil.dumpString();
         Log.d("Test", "getAvailableMem " + MemoryUtil.bytesToString(MemoryUtil.getAvailableMem(this)) + "\n" +
                       "getThreshold " + MemoryUtil.bytesToString(MemoryUtil.getThreshold(this)) + "\n" +
-                      "getCurrentHeap " + MemoryUtil.bytesToString(MemoryUtil.getCurrentHeap()) + "MB \n" +
+                      "getCurrentHeap " + MemoryUtil.bytesToString(MemoryUtil.getCurrentHeap()) + "\n" +
                       "getFreeMem " + MemoryUtil.bytesToString(MemoryUtil.getFreeMem()) + "\n" +
                       "getMaxHeap " + MemoryUtil.bytesToString(MemoryUtil.getMaxHeap()) + "\n" +
                       "getTotalMem " + MemoryUtil.bytesToString(MemoryUtil.getTotalMem()) + "\n" +
