@@ -24,6 +24,10 @@ public class SwapReference<T> {
         SwapManager.initialize();
         synchronized (SwapManager.class) { set(object); }
     }
+    
+    public void clear() {
+    	set(null);
+    }
 
     /**
      * Get the referent. If it is swapped out, it will be swapped in.

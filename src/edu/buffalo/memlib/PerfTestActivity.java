@@ -1,12 +1,12 @@
 package edu.buffalo.memlib;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Random;
+import java.util.Set;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.Button;
+import edu.buffalo.memlib.manager.MemoryUtil;
 
 public class PerfTestActivity extends Activity {
 
@@ -40,12 +40,46 @@ public class PerfTestActivity extends Activity {
             int mb = 35;
 
             SwapLib.setPolicy(new Policy() {{
-                fgHeapOptUsage = 0.1;
-                fgHeapMaxUsage = 0.1;
+                fgHeapOptUsage = 0.7;
+                fgHeapMaxUsage = 0.5;
             }});
             System.out.println("Generating test objects...");
             total = 0;
-            for (int i = 1; i <= mb; i++) {
+            for (int i = 1; i <= mb/5; i++) {
+                double time = time();
+//                System.out.println("Creating 100KB... "+i);
+                set.add(new Holder(new byte[5<<20]));
+                time = time()-time;
+//                System.out.println("   time: "+time+"ms");
+                total += time;
+            }
+            System.out.println("Done creating! total = "+total);
+
+            SwapLib.setPolicy(new Policy() {{
+                fgHeapOptUsage = 1.0;
+                fgHeapMaxUsage = 1.0;
+            }});
+            System.out.println("Starting iteration...");
+            total = 0;
+            int i = 1;
+            for (Holder r : set) {
+                double time = time();
+//                System.out.println("Getting 100KB... "+i++);
+//                System.out.println("   Swapped? "+r.isSwappedOut());
+                r.get();
+                time = time()-time;
+//                System.out.println("   time: "+time+"ms");
+                total += time;
+            }
+            System.out.println("Done iterating! total = "+total);
+            for (SwapReference sr : set) sr.clear();
+            System.gc();
+            System.out.println(MemoryUtil.bytesToString(MemoryUtil.getUsedHeap()));
+            
+            /* Control Tests */
+            System.out.println("Generating test objects...");
+            total = 0;
+            for ( i = 1; i <= mb; i++) {
                 double time = time();
 //                System.out.println("Creating 100KB... "+i);
                 set.add(new Holder(new byte[1<<20]));
@@ -55,13 +89,9 @@ public class PerfTestActivity extends Activity {
             }
             System.out.println("Done creating! total = "+total);
 
-            SwapLib.setPolicy(new Policy() {{
-                fgHeapOptUsage = 0.9;
-                fgHeapMaxUsage = 0.9;
-            }});
             System.out.println("Starting iteration...");
             total = 0;
-            int i = 1;
+             i = 1;
             for (Holder r : set) {
                 double time = time();
 //                System.out.println("Getting 100KB... "+i++);
