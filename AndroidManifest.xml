@@ -32,6 +32,7 @@
         </activity>
         <activity
             android:name="edu.buffalo.memlib.PerfTestActivity"
+            android:screenOrientation="portrait"
             android:label="@string/app_name" >
         </activity>
         <activity

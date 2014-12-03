@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <!-- Settings -->
+    <Button
+        android:id="@+id/settingsToggle"
+        android:layout_height="wrap_content"
+        android:layout_width="fill_parent"
+        android:text="Settings"
+        android:clickable="true"
+        android:onClick="toggleSettings"/>
+
+    <LinearLayout
+        android:id="@+id/settingsMenu"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:orientation="vertical">
+        <TextView android:text="Maximum Heap Usage"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"/>
+        <TextView
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:id="@+id/maxHeapValue"/>
+        <SeekBar
+            android:id="@+id/maxHeapSlider"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"/>
+
+        <TextView android:text="Optimal Heap Usage"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"/>
+        <TextView
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:id="@+id/optHeapValue"/>
+        <SeekBar
+            android:id="@+id/optHeapSlider"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_horizontal">
+            <TextView android:text="Item Size (MB)"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.5"
+                android:layout_width="0dp"/>
+            <TextView android:text="Item Count"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.5"
+                android:layout_width="0dp"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_horizontal">
+            <NumberPicker
+                android:layout_height="wrap_content"
+                android:layout_width="0dp"
+                android:layout_weight="0.5"
+                android:id="@+id/sizePicker"/>
+            <NumberPicker
+                android:layout_height="wrap_content"
+                android:layout_width="0dp"
+                android:layout_weight="0.5"
+                android:id="@+id/countPicker"/>
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- Controls -->
+    <Button
+        android:id="@+id/startTestButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Start"
+        android:onClick="startTest"/>
+
+    <!-- Graph -->
+    <LinearLayout
+        android:id="@+id/graph1"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal" >
+    </LinearLayout>
+</LinearLayout>
