@@ -66,19 +66,16 @@ public class PerfTestActivity extends Activity {
         maxHeapSlider.setOnSeekBarChangeListener(osbcl);
         optHeapSlider.setOnSeekBarChangeListener(osbcl);
 
-        policy.fgHeapMaxUsage = .7;
-        policy.fgHeapOptUsage = .6;
-
         maxHeapSlider.setProgress((int) (100 * policy.fgHeapMaxUsage));
         optHeapSlider.setProgress((int) (100 * policy.fgHeapOptUsage));
 
         sizePicker.setMinValue(1);
         sizePicker.setMaxValue(20);
-        sizePicker.setValue(5);
+        sizePicker.setValue(1);
 
         countPicker.setMinValue(1);
         countPicker.setMaxValue(300);
-        countPicker.setValue(20);
+        countPicker.setValue(30);
 
         // Set up graph.
         graphView = new BarGraphView(this , "Iteration Timing");
